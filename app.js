@@ -3,6 +3,9 @@
    with graceful fallback when GSAP is unavailable. */
 (() => {
   const D = window.PM;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const cleanUrl = () => { if (location.hash) history.replaceState(null, '', location.pathname + location.search); };
+  cleanUrl(); scrollTo(0, 0);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const $ = (s, r = document) => r.querySelector(s);
@@ -16,6 +19,7 @@
   const avatar = (slug, cls = '') => {
     const c = client(slug);
     if (!c) return `<span class="ini ${cls}">PM</span>`;
+    if (!c.photo) return `<span class="ini ${cls}">${initials(c.name)}</span>`;
     return `<img class="${cls}" src="${c.photo}" alt="${esc(c.short)}" loading="lazy" data-ini="${initials(c.name)}" onerror="PMimgFail(this)">`;
   };
   window.PMimgFail = img => { const s = document.createElement('span'); s.className = img.className + ' ini'; s.textContent = img.dataset.ini || 'PM'; img.replaceWith(s); };
@@ -100,7 +104,7 @@
       if (k.theme === 'proof') {
         return `<article class="case wide proof rv" data-case="${k.slug}" data-d="${i % 3}">
           <div class="proof-grid"><div class="proof-txt">${meta}${who}${big}<div class="case-title">${esc(k.title)}</div><p class="case-desc">${esc(k.desc)}</p><div class="chips">${chips}</div><span class="case-more">Open case study <span class="arrow">→</span></span></div>
-          <div class="proof-img"><img src="${k.proof}" alt="YouTube Studio analytics for ${esc(c.short)}" loading="lazy"></div></div></article>`;
+          <div class="proof-img" data-label="${esc(k.proofLabel || 'YouTube Studio · 28 days')}"><img src="${k.proof}" alt="YouTube Studio analytics for ${esc(c.short)}" loading="lazy"></div></div></article>`;
       }
       const money = k.theme === 'money' ? `<div class="money-fx" aria-hidden="true">${Array.from({ length: 14 }, (_, j) => `<i style="left:${(j * 7 + 3) % 96}%;animation-delay:${(j * .37) % 2.4}s;font-size:${16 + (j % 3) * 6}px">$</i>`).join('')}</div>` : '';
       return `<article class="case ${k.theme} ${k.size || ''} rv" data-case="${k.slug}" data-d="${i % 3}">
@@ -159,17 +163,64 @@
       <g class="gondola" id="gondola">${VEH.map((v, i) => `<g class="vwrap" transform="translate(-40,-44)"><g class="vslot" data-v="${i}">${v}</g></g>`).join('')}</g>`;
     stage.insertAdjacentHTML('beforeend', D.timeline.map((t, i) => {
       const above = i <= 2; const left = ST_X[i] / 1200 * 100, top = ST_Y[i] / 520 * 100;
-      return `<div class="yearcard" data-i="${i}" style="left:${left}%;top:${top}%;transform-origin:center;${above ? 'translate:-50% calc(-100% - 70px)' : 'translate:-50% 104px'}"><div class="yhead"><h4>${esc(t.title)}</h4><svg class="yveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div><p>${esc(t.text)}</p>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div></div>`;
+      return `<div class="yearcard" data-i="${i}" data-year-i="${i}" style="left:${left}%;top:${top}%;transform-origin:center;${above ? 'translate:-50% calc(-100% - 70px)' : 'translate:-50% 104px'}"><div class="yhead"><h4>${esc(t.hl || t.title)}</h4><svg class="yveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div><span class="ycta">Read the full ${t.year} story →</span></div>`;
     }).join(''));
   }
   const mob = $('#ascentMobile'), stripSvg = $('#stripSvg');
-  if (mob) mob.insertAdjacentHTML('beforeend', D.timeline.map((t, i) => `<div class="mstop" data-i="${i}"><div class="mhd"><div><div class="y">${t.year}</div><div class="l">${esc(t.label)}</div></div><svg class="mveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div><h4>${esc(t.title)}</h4><p>${esc(t.text)}</p>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div><div class="chips">${t.chips.map(c => `<span class="chip">${esc(c)}</span>`).join('')}</div></div>`).join(''));
+  if (mob) mob.insertAdjacentHTML('beforeend', D.timeline.map((t, i) => `<div class="mstop" data-i="${i}" data-year-i="${i}"><div class="mhd"><div><div class="y">${t.year}</div><div class="l">${esc(t.label)}</div></div><svg class="mveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div><h4>${esc(t.title)}</h4><p>${esc(t.text)}</p>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div><div class="chips">${t.chips.map(c => `<span class="chip">${esc(c)}</span>`).join('')}</div><span class="ycta">Read the full ${t.year} story →</span></div>`).join(''));
   const MX = [28, 112, 196, 280, 364], MY = [118, 99, 79, 59, 38], MGROUND = 136;
   const stripPath = 'M28,118 C60,118 70,99 112,99 S160,79 196,79 S240,59 280,59 S325,38 364,38';
   if (stripSvg) stripSvg.innerHTML = `<path class="cable" d="${stripPath}"/><path class="cable-done" id="stripDone" d="${stripPath}"/>` +
     D.timeline.map((t, i) => `<g class="sst" data-i="${i}" transform="translate(${MX[i]},${MY[i]})"><path class="py" d="M0 0V${MGROUND - MY[i]}"/><circle r="5"/><text y="${MGROUND - MY[i] + 12}" text-anchor="middle">${t.year}</text></g>`).join('') +
-    `<g id="gondolaM">${VEH.map((v, i) => `<g class="vwrap" transform="translate(-26,-28) scale(.65)"><g class="vslot" data-v="${i}">${v}</g></g>`).join('')}</g>`;
+    `<text class="odo-s" id="odoStrip" x="384" y="14" text-anchor="end"><tspan id="odoStripM">Nov</tspan> 2022</text><g id="gondolaM">${VEH.map((v, i) => `<g class="vwrap" transform="translate(-26,-28) scale(.65)"><g class="vslot" data-v="${i}">${v}</g></g>`).join('')}</g>`;
 
+  const SRC_ICON = {
+    slack: '<svg viewBox="0 0 24 24"><path d="M6 15a2 2 0 1 1-2-2h2zm1 0a2 2 0 0 1 4 0v5a2 2 0 0 1-4 0zM9 6a2 2 0 1 1 2-2v2zm0 1a2 2 0 0 1 0 4H4a2 2 0 0 1 0-4zm9 2a2 2 0 1 1 2 2h-2zm-1 0a2 2 0 0 1-4 0V4a2 2 0 0 1 4 0zm-2 9a2 2 0 1 1-2 2v-2zm0-1a2 2 0 0 1 0-4h5a2 2 0 0 1 0 4z"/></svg>',
+    email: '<svg viewBox="0 0 24 24"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 18.5v-13zm2 .7v.6l8 5 8-5v-.6l-8 5-8-5zm0 2.9V18h16V9.1l-8 5-8-5z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.1-.2-.2-.5-.3z"/></svg>',
+    call: '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .57 3.6 1 1 0 0 1-.25 1z"/></svg>',
+    deck: '<svg viewBox="0 0 24 24"><path d="M3 4h18v2h-1v10H4V6H3V4zm3 4v6h12V8H6zm5 10h2v1.6l2.5 2.4-1.4 1.4L12 19.3l-2.1 2.1-1.4-1.4L11 17.6V18z"/></svg>',
+    review: '<svg viewBox="0 0 24 24"><path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7L3 17.3zm17.7-10.2a1 1 0 0 0 0-1.4l-2.4-2.4a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7 1.9-1.7z"/></svg>',
+  };
+  /* ---------------- playbooks: LinkedIn → Instagram → YouTube ---------------- */
+  const PB_LOGO = { tiktok: 'M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-1.8-2.5V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6z', reddit: 'M22 12.1a2.2 2.2 0 0 0-3.7-1.6 10.7 10.7 0 0 0-5.8-1.8l1-4.6 3.2.7a1.5 1.5 0 1 0 .2-1l-3.6-.8a.5.5 0 0 0-.6.4l-1.1 5.3a10.8 10.8 0 0 0-5.9 1.8 2.2 2.2 0 1 0-2.4 3.6 4.3 4.3 0 0 0 0 .7c0 3.4 3.9 6.1 8.7 6.1s8.7-2.7 8.7-6.1a4.3 4.3 0 0 0 0-.7 2.2 2.2 0 0 0 1.3-2zM7 13.6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm8.6 4.1a5.6 5.6 0 0 1-3.6 1.1 5.6 5.6 0 0 1-3.6-1.1.4.4 0 0 1 .6-.6 4.8 4.8 0 0 0 3 .9 4.8 4.8 0 0 0 3-.9.4.4 0 0 1 .6.6zm-.3-2.6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z', x: 'M17.8 3h3l-6.7 7.7L22 21h-6.2l-4.8-6.3L5.4 21h-3l7.2-8.2L2 3h6.3l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z', linkedin: 'M20.4 2H3.6A1.6 1.6 0 0 0 2 3.6v16.8A1.6 1.6 0 0 0 3.6 22h16.8a1.6 1.6 0 0 0 1.6-1.6V3.6A1.6 1.6 0 0 0 20.4 2zM8 19H5V9h3v10zM6.5 7.7a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4zM19 19h-3v-4.9c0-1.2 0-2.7-1.6-2.7s-1.9 1.3-1.9 2.6V19h-3V9h2.9v1.4a3.2 3.2 0 0 1 2.8-1.6c3 0 3.6 2 3.6 4.6V19z', instagram: 'M12 2.2c3.2 0 3.6 0 4.8.1 3.2.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1zm0 4.7a5.1 5.1 0 1 0 0 10.2 5.1 5.1 0 0 0 0-10.2zm0 8.4a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6zm5.3-9.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z', youtube: 'M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .6 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .4-4.8 31 31 0 0 0-.4-4.8zM9.7 15.1V8.9l6 3.1-6 3.1z' };
+  const AV_SVG = '<svg viewBox="0 0 40 40"><defs><linearGradient id="avg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE100"/><stop offset="1" stop-color="#F6951B"/></linearGradient></defs><circle cx="20" cy="20" r="20" fill="url(#avg)"/><path d="M8 40c1-8 6-12 12-12s11 4 12 12z" fill="#1F2A44"/><path d="M14.5 27.5h11" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="16" r="7.5" fill="#F3C9A5"/><path d="M12.4 15.2c.4-5.2 3.7-7.6 7.6-7.6s7.2 2.4 7.6 7.6c-1.6-1.9-3.9-2.6-7.6-2.6s-6 .7-7.6 2.6z" fill="#2B1B12"/><path d="M14.8 17.2h3.4M21.8 17.2h3.4" stroke="#1F2A44" stroke-width="1.4" stroke-linecap="round"/></svg>';
+  const pbEl = $('#playbook'); let pbState = -1, pbBusy = false, pbPending = -1;
+  const setDial = i => { const d = $('#pbDial'); if (!d) return; $$('.dl', d).forEach((x, k) => x.classList.toggle('on', k === i)); const cur = $('.dl-cursor', d); if (cur) { const y = i * (pbEl.classList.contains('compact') ? 42 : 50); if (G && !reduce) G.to(cur, { y, duration: .55, ease: 'power3.inOut' }); else cur.style.transform = `translateY(${y}px)`; } };
+  const pbPhone = pb => `<div class="li-head"><span class="li-av" aria-hidden="true">${AV_SVG}</span><div><b>${esc(pb.phone.who)}</b><span>${esc(pb.phone.sub)}</span></div></div>
+      <div class="li-stat"><span>${esc(pb.phone.label)}</span><b><span data-count="${pb.phone.n}" data-suffix="${esc(pb.phone.suffix)}">0</span></b><em>${esc(pb.phone.up)}</em></div>
+      <div class="li-posts" aria-hidden="true"><i></i><i></i><i></i></div><div class="li-react">${pb.phone.react.map(([n, l]) => `<span><b data-count="${n}">0</b> ${esc(l)}</span>`).join('')}</div>
+      <div class="li-bars">${pb.phone.bars.map(h => `<i style="--h:${h}"></i>`).join('')}</div>
+      <div class="li-cad"><span>${esc(pb.phone.cad)}</span><div class="cad">${Array.from({ length: 30 }, (_, i) => `<i style="--i:${i};--o:${(.25 + ((i * 7) % 10) / 12).toFixed(2)}"></i>`).join('')}</div></div><div class="li-src"><span><i></i>Source: ${esc(pb.source)}</span><span>Updated Sep 2026</span></div>`;
+  const pbSideHtml = pb => `<div class="eyebrow" style="margin-bottom:8px">${esc(pb.eyebrow)}</div><h3 class="h3">${pb.title}</h3><p class="small muted" style="max-width:46ch;margin:10px 0 18px">${esc(pb.intro)}</p><ol class="pb-steps">${pb.steps.map(([b, t], i) => `<li style="--i:${i}"><b>${esc(b)}</b>${esc(t)}</li>`).join('')}</ol>${pb.clients && pb.clients.length ? `<div class="pb-proof"><span class="faces">${pb.clients.map(sl => avatar(sl)).join('')}</span><span>Run for <b>${pb.clients.map(sl => client(sl) ? client(sl).short : '').filter(Boolean).join(', ')}</b> · every number traces to a dashboard, report or payment.</span></div>` : `<div class="pb-proof"><span>${esc(pb.source)}. We publish results only once a client dashboard shows them.</span></div>`}`;
+  const pbResHtml = pb => pb.results.map(([k, t]) => `<div><span class="k">${esc(k)}</span><span>${esc(t)}</span></div>`).join('');
+  const setPlaybook = (i, instant) => {
+    if (!pbEl || !D.playbooks || i === pbState) return;
+    if (pbBusy) { pbPending = i; return; }
+    const pb = D.playbooks[i]; pbState = i;
+    $$('#pbTabs button').forEach((b, k) => b.classList.toggle('on', k === i));
+    const apply = () => {
+      pbEl.style.setProperty('--pb', pb.color); pbEl.style.setProperty('--pb2', pb.color2); document.body.style.setProperty('--pb', pb.color); document.body.style.setProperty('--pb2', pb.color2);
+      const lg = $('#pbLogo path'); if (lg) lg.setAttribute('d', PB_LOGO[pb.key] || '');
+      setDial(i);
+      $('#pbCard').innerHTML = pbPhone(pb); $('#pbSide').innerHTML = pbSideHtml(pb); $('#pbResults').innerHTML = pbResHtml(pb);
+      $$('#pbCard [data-count]').forEach(countEl);
+    };
+    if (instant || !G || reduce) { apply(); return; }
+    pbBusy = true; pbEl.classList.add('sw');
+    const ph = $('.phone');
+    G.timeline({ onComplete: () => { pbBusy = false; if (pbPending >= 0 && pbPending !== pbState) { const n = pbPending; pbPending = -1; setPlaybook(n); } else pbPending = -1; } })
+      .to(ph, { rotateY: 90, duration: .22, ease: 'power2.in' })
+      .add(() => { apply(); pbEl.classList.remove('sw'); })
+      .to(ph, { rotateY: 0, duration: .36, ease: 'power2.out' });
+  };
+  if (pbEl && D.playbooks) {
+    $('#pbTabs').innerHTML = D.playbooks.map((pb, i) => `<button type="button" role="tab" style="--c:${pb.color}"><i></i>${esc(pb.name)}</button>`).join('');
+    const dial = $('#pbDial'); if (dial) dial.insertAdjacentHTML('beforeend', D.playbooks.map((pb, i) => `<span class="dl" data-key="${pb.key}"><svg viewBox="0 0 24 24"><path d="${PB_LOGO[pb.key] || ''}"/></svg><span class="dl-lbl">${esc(pb.name)} · ${String(i + 1).padStart(2, '0')}/${String(D.playbooks.length).padStart(2, '0')}</span></span>`).join(''));
+    $$('#pbTabs button').forEach((b, i) => b.addEventListener('click', () => { pbManual = true; setPlaybook(i); }));
+  }
+  let pbManual = false;
+  setTimeout(() => setPlaybook(0, true), 0);
   /* ---------------- render: testimonials ---------------- */
   const vgrid = $('#vgrid');
   if (vgrid) vgrid.innerHTML = D.videoTestimonials.map((v, i) => {
@@ -188,7 +239,7 @@
       if (short && role === short) role = ''; else if (short && role.startsWith(short + ' · ')) role = role.slice(short.length + 3);
       const sub = [(short && short !== main.who) ? short : '', role].filter(Boolean).join(' · ');
       const lines = rest.map(q => `<div class="ql"><span>“${esc(q.q)}”</span><small>${esc(q.src)} · ${esc(q.date)}</small></div>`).join('');
-      return `<div class="tcard rv ${main.star ? 'star' : ''} ${i >= 9 ? 'extra' : ''}" data-client="${slug}" data-src="${srcKey(main.src)}" data-d="${i % 3}"><span class="src">${esc(main.src)} · ${esc(main.date)}</span><div class="q">${esc(main.q)}</div>${lines}<div class="who">${avatar(slug)}<div><b>${esc(main.who)}</b><span>${esc(sub)}</span></div></div>${qs.length > 3 ? `<span class="more">+${qs.length - 3} more · read the client story →</span>` : `<span class="more">Read the client story →</span>`}</div>`;
+      return `<div class="tcard rv ${main.star ? 'star' : ''} ${i >= 9 ? 'extra' : ''}" data-client="${slug}" data-src="${srcKey(main.src)}" data-d="${i % 3}" style="--i:${Math.max(0, i - 9)}"><span class="src">${SRC_ICON[srcKey(main.src)] || ''}${esc(main.src)} · ${esc(main.date)}</span><div class="q">${esc(main.q)}</div>${lines}<div class="who">${avatar(slug)}<div><b>${esc(main.who)}</b><span>${esc(sub)}</span></div></div></div>`;
     }).join('');
     const btn = $('#moreQuotes'); if (btn) btn.textContent = `Show all ${order.length} clients`;
   }
@@ -211,11 +262,29 @@
 
   /* ---------------- render: team ---------------- */
   const founders = $('#founders');
-  if (founders) founders.innerHTML = D.team.founders.map(f => `<div class="fcard rv"><img src="${f.photo}" alt="${esc(f.name)}" data-ini="${initials(f.name)}" onerror="PMimgFail(this)"><div><h4>${esc(f.name)}</h4><div class="role">${esc(f.role)}</div><p>${esc(f.text)}</p>${f.li ? `<a class="li" href="${f.li}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}</div></div>`).join('');
+  if (founders) founders.innerHTML = D.team.founders.map((f, i) => `<div class="fcard rv"><span class="fnum">${i === 0 ? 'Founder · since Dec 2022' : 'Co-founder · since Dec 2022'}</span><img src="${f.photo}" alt="${esc(f.name)}" data-ini="${initials(f.name)}" onerror="PMimgFail(this)"><div><h4>${esc(f.name)}</h4><div class="role">${esc(f.role)}</div><p>${esc(f.text)}</p><div class="fx">${(f.chips || []).map(c => `<span>${esc(c)}</span>`).join('')}</div>${f.li ? `<a class="li" href="${f.li}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}</div></div>`).join('');
   const teamNow = $('#teamNow');
   if (teamNow) teamNow.innerHTML = D.team.now.map(([n, r], i) => `<div class="tm rv" data-d="${i % 5}"><b>${esc(n)}</b><span>${esc(r)}</span></div>`).join('');
   const alumni = $('#alumni');
   if (alumni) alumni.innerHTML = `<b>Editors and teammates who shaped the work since 2022:</b> ${D.team.alumni.map(esc).join(' · ')}.`;
+
+  const svc = $('#svc');
+  if (svc && D.services) {
+    svc.innerHTML = D.services.core.map(([n, w, p, col, ic], i) => `<div class="cs rv" data-d="${i % 4}" style="--hc:${col}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="ic"><svg viewBox="0 0 24 24">${ic}</svg></span><span class="wm"><svg viewBox="0 0 24 24">${ic}</svg></span><h4>${esc(n)}</h4><p>${esc(w)}</p><span class="pr">${esc(p)}</span></div>`).join('');
+    const bub = $('#svcBubble'); if (bub) { const say = t => { bub.classList.add('sw'); setTimeout(() => { bub.textContent = t; bub.classList.remove('sw'); }, 220); }; $$('.cs', svc).forEach((card, i) => { const [n, , p] = D.services.core[i]; const on = () => say(`${n}: ${p}.`); card.addEventListener('mouseenter', on); card.addEventListener('click', on); }); }
+    const mo = $('#svcMore'); if (mo) mo.innerHTML = `<span class="al">Also inside a retainer</span>` + D.services.more.map((x, i) => `<span style="--c:${D.services.core[i % 8][3]}">${esc(x)}</span>`).join('');
+  }
+  const dc = $('#driveCard'); if (dc && D.library) { dc.href = D.library.url; const n = $('#driveNote'); if (n) n.textContent = D.library.note; const ch = $('#driveChips'); if (ch && D.library.niches) ch.innerHTML = D.library.niches.map((x, i) => `<span style="--i:${i}">${esc(x)}</span>`).join(''); }
+
+  /* ---------------- hover identity card (desktop) ---------------- */
+  const idc = document.createElement('div'); idc.className = 'idcard'; document.body.appendChild(idc);
+  if (fine) {
+    let cur = null;
+    const show = (slug, x, y) => { const c = client(slug); if (!c) return hide(); if (cur !== slug) { idc.innerHTML = `${avatar(slug)}<div><b>${esc(c.name)}</b><span>${esc(c.niche)} · ${esc(c.platform)}</span>${c.subs ? `<span>${esc(c.subs)}</span>` : ''}<span class="tag2">Verified client${c.since ? ' · since ' + esc(c.since) : ''}</span></div>`; cur = slug; } place(x, y); idc.classList.add('on'); };
+    const place = (x, y) => { const w = 270, h = 92; let l = x + 18, t = y + 18; if (l + w > innerWidth - 12) l = x - w - 18; if (t + h > innerHeight - 12) t = y - h - 18; idc.style.left = l + 'px'; idc.style.top = t + 'px'; };
+    const hide = () => { idc.classList.remove('on'); cur = null; };
+    document.addEventListener('mousemove', e => { const el = e.target.closest('.vcard, .wrow[data-client], .tchip, .bchip'); if (el && el.dataset.client && !e.target.closest('.modal')) show(el.dataset.client, e.clientX, e.clientY); else hide(); }, { passive: true });
+  }
 
   /* ---------------- modal ---------------- */
   const modal = $('#modal'), mbox = $('#modalBox');
@@ -248,11 +317,17 @@
     openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${win.length ? `<h5>The work</h5><ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${receiptsFor(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${clientLinks(slug)}</div>`);
   };
   const openVideo = (v, orient, slug) => openModal(`${slug ? clientHead(slug) : ''}<div class="mbody">${videoHtml(v, orient)}</div>`);
+  const openYear = i => {
+    const t = D.timeline[i]; if (!t) return;
+    openModal(`<div class="mhead"><svg class="yveh" viewBox="0 0 80 44" style="width:84px;height:46px;flex:none" aria-hidden="true">${VEH[i]}</svg><div><div class="eyebrow" style="margin-bottom:6px">${t.year} · ${esc(t.label)}</div><h3>${esc(t.hl || t.title)}</h3></div></div>
+      <div class="mbody ymodal"><div class="story">${(t.story || [t.text]).map(p => `<p>${esc(p)}</p>`).join('')}</div>${statsHtml(t)}<h5>Milestones</h5><div class="chips">${t.chips.map(c => `<span class="chip">${esc(c)}</span>`).join('')}</div><h5>Clients who joined</h5><div class="ycl">${t.clients.map(s => { const c = client(s); return c ? `<span data-client="${s}">${avatar(s)}${esc(c.short)}</span>` : ''; }).join('')}</div></div>`);
+  };
   document.addEventListener('click', e => {
     const a = e.target.closest('a'); if (a && a.closest('.modal')) return;
+    const yr = e.target.closest('[data-year-i]'); if (yr && !e.target.closest('.modal')) return openYear(+yr.dataset.yearI);
     const cs = e.target.closest('[data-case]'); if (cs) return openCase(cs.dataset.case);
     const vd = e.target.closest('[data-video]'); if (vd) return openVideo(vd.dataset.video, vd.dataset.orient, vd.dataset.client);
-    const cl = e.target.closest('[data-client]'); if (cl && !cl.closest('.modal')) return openClient(cl.dataset.client);
+    const cl = e.target.closest('[data-client]'); if (cl && (!cl.closest('.modal') || cl.closest('.ycl'))) return openClient(cl.dataset.client);
   });
 
   /* ---------------- tabs, show-more ---------------- */
@@ -278,9 +353,11 @@
     nav.classList.remove('open'); document.body.style.overflow = '';
     const id = a.getAttribute('href'); if (!id.startsWith('#')) return;
     const sec = $(id); if (!sec) return; e.preventDefault();
-    sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); cleanUrl();
     setTimeout(() => sectionFlourish(id), reduce ? 0 : 650);
   }));
+  const logoLink = $('#logoLink'); if (logoLink) logoLink.addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); cleanUrl(); });
+  document.addEventListener('click', e => { const a = e.target.closest('main a[href^="#"], footer a[href^="#"]'); if (!a) return; const sec = $(a.getAttribute('href')); if (!sec) return; e.preventDefault(); sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); cleanUrl(); });
   const sectionFlourish = id => {
     if (!G) return;
     if (id === '#results') { replayNumbers(); }
@@ -294,7 +371,7 @@
   /* ---------------- reveal ---------------- */
   const revealAll = () => $$('.rv').forEach(el => el.classList.add('in'));
   if (reduce || !('IntersectionObserver' in window)) revealAll();
-  else { const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); if (x.target.classList.contains('playbook')) $$('[data-count]', x.target).forEach(countEl); io.unobserve(x.target); } }), { threshold: .08, rootMargin: '0px 0px -6% 0px' }); $$('.rv').forEach(el => io.observe(el)); }
+  else { const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); if (innerWidth <= 700 && x.target.classList.contains('case')) $$('#bento .case').forEach(c => { c.classList.add('in'); io.unobserve(c); }); if (x.target.classList.contains('playbook')) $$('[data-count]', x.target).forEach(countEl);  io.unobserve(x.target); } }), { threshold: .08, rootMargin: '0px 0px -6% 0px' }); $$('.rv').forEach(el => io.observe(el)); }
 
   /* ---------------- counters + bars ---------------- */
   const fmt = (n, dec) => { const s = n.toFixed(dec); const [a, b] = s.split('.'); return a.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (b ? '.' + b : ''); };
@@ -325,13 +402,12 @@
     $$('.hero .rv').forEach(el => el.classList.add('in'));
     const lineP = $('#lineP'), area = $('#areaP'), dot = $('#dotP');
     if (!lineP) return;
-    const len = lineP.getTotalLength(); lineP.style.strokeDasharray = len; lineP.style.strokeDashoffset = len;
+    const len = lineP.getTotalLength(); lineP.style.strokeDasharray = len; lineP.style.strokeDashoffset = afterIntro ? 0 : len;
     if (G && !reduce) {
-      G.to(lineP, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', delay: .1 });
-      G.fromTo(area, { opacity: 0 }, { opacity: 1, duration: .9, delay: .8 });
-      G.fromTo(dot, { scale: 0, transformOrigin: 'center' }, { scale: 1, duration: .45, delay: 1.5, ease: 'back.out(3)' });
+      if (afterIntro) { G.set(area, { opacity: 1 }); G.set(dot, { scale: 1, transformOrigin: 'center' }); }
+      else { G.to(lineP, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut', delay: .1 }); G.fromTo(area, { opacity: 0 }, { opacity: 1, duration: .9, delay: .8 }); G.fromTo(dot, { scale: 0, transformOrigin: 'center' }, { scale: 1, duration: .45, delay: 1.5, ease: 'back.out(3)' }); }
       if (!afterIntro) G.to('.fchip', { opacity: 1, y: 0, scale: 1, duration: .8, ease: 'elastic.out(1,.6)', stagger: .12, delay: .6 });
-      G.to('.board', { y: -6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      G.to('.board', { y: -6, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: afterIntro ? 1.3 : 0 });
       $$('.fchip').forEach((c, i) => G.to(c, { y: i % 2 ? 8 : -8, duration: 2.6 + i * .4, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 2 + i * .2 }));
       $$('.kpi .k[data-count]').forEach(countEl);
     } else { lineP.style.strokeDashoffset = 0; $$('.fchip').forEach(c => { c.style.opacity = 1; c.style.transform = 'none'; }); $$('.kpi .k[data-count]').forEach(countEl); }
@@ -345,6 +421,7 @@
     for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; const cx = (x0 + x1) / 2; d += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
     $('#lineP').setAttribute('d', d); $('#areaP').setAttribute('d', `${d} L${pts[n][0]},${H - pad} L${pts[0][0]},${H - pad} Z`);
     const [lx, ly] = pts[n]; $('#dotP').setAttribute('cx', lx); $('#dotP').setAttribute('cy', ly);
+    const ilp = $('#ilPath'); if (ilp) { ilp.setAttribute('d', d); const ild = $('#ilDot'); if (ild) { ild.setAttribute('cx', lx); ild.setAttribute('cy', ly); } }
   }
 
   /* ---------------- opening: the proof, scattered, then swept up into place ---------------- */
@@ -352,26 +429,28 @@
   const buildIntro = () => {
     let seed = 11; const r = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
     const items = [];
-    D.marquee.slice(0, 16).forEach(s => { const c = client(s); if (c) items.push(`<div class="ichip">${avatar(s)}<span>${esc(c.short)}</span></div>`); });
-    D.wins.slice(0, 8).forEach(([k]) => items.push(`<div class="ichip metric ${k.startsWith('$') || /lead/.test(k) ? 'money' : ''}"><div><b>${esc(k)}</b></div></div>`));
-    D.cases.filter(k => !['sold-by-seller', 'truthseekah', 'crypto-giant', 'dudley'].includes(k.slug)).slice(0, 10).forEach(k => items.push(`<div class="ichip metric ${k.theme === 'money' ? 'money' : ''}"><div><b>${esc(k.big)}</b><span>${esc(k.unit)}</span></div></div>`));
-    D.quotes.filter(q => q.star).slice(0, 9).forEach(q => items.push(`<div class="ichip quote">${esc(q.q.split(' ').slice(0, 7).join(' '))}…</div>`));
+    D.marquee.slice(0, 12).forEach(s => { const c = client(s); if (c) items.push(`<div class="ichip">${avatar(s)}<span>${esc(c.short)}</span></div>`); });
+    D.wins.slice(0, 6).forEach(([k]) => items.push(`<div class="ichip metric ${k.startsWith('$') || /lead/.test(k) ? 'money' : ''}"><div><b>${esc(k)}</b></div></div>`));
+    D.cases.filter(k => !['sold-by-seller', 'truthseekah', 'crypto-giant', 'dudley'].includes(k.slug)).slice(0, 7).forEach(k => items.push(`<div class="ichip metric ${k.theme === 'money' ? 'money' : ''}"><div><b>${esc(k.big)}</b><span>${esc(k.unit)}</span></div></div>`));
+    D.quotes.filter(q => q.star).slice(0, 6).forEach(q => items.push(`<div class="ichip quote">${esc(q.q.split(' ').slice(0, 7).join(' '))}…</div>`));
     [['YouTube', '#FF0000'], ['Instagram', '#E1306C'], ['TikTok', '#0F0F0F'], ['LinkedIn', '#0A66C2'], ['Facebook', '#1877F2']].forEach(([n, c]) => items.push(`<div class="ichip plat"><i style="--pc:${c}"></i>${n}</div>`));
-    for (let i = 0; i < 6; i++) items.push('<div class="ichip coin">$</div>');
+    for (let i = 0; i < 4; i++) items.push('<div class="ichip coin">$</div>');
     items.push('<div class="ichip stars">★★★★★</div>', '<div class="ichip metric"><div><b>11M+</b><span>views on client channels</span></div></div>', '<div class="ichip metric"><div><b>3,000+</b><span>videos delivered</span></div></div>', '<div class="ichip metric"><div><b>100+</b><span>creators &amp; brands</span></div></div>');
     cloud.innerHTML = items.map(h => h.replace('class="ichip', `style="left:${(5 + r() * 90).toFixed(1)}%;top:${(6 + r() * 86).toFixed(1)}%;transform:translate(-50%,-50%) rotate(${(r() * 24 - 12).toFixed(1)}deg) scale(${(.84 + r() * .26).toFixed(2)})" class="ichip`)).join('');
     /* the hero's own stat cards start scattered too: identical clones, so they land as themselves */
     $$('.fchip[data-fly]').forEach(t => { const cl = t.cloneNode(true); cl.className = 'fchip fly'; cl.dataset.fly = t.dataset.fly; cl.style.cssText = `left:${(8 + r() * 84).toFixed(1)}%;top:${(8 + r() * 80).toFixed(1)}%;transform:translate(-50%,-50%) rotate(${(r() * 20 - 10).toFixed(1)}deg)`; cloud.appendChild(cl); });
-    if (G) G.to($$('.ichip, .fchip.fly', cloud), { y: '+=7', duration: 1.3, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: { each: .015, from: 'random' } });
+    if (G) G.to($$('.ichip, .fchip.fly', cloud), { y: '+=7', duration: 1.3, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true, stagger: { each: .015, from: 'random' } });
   };
   const runIntro = () => {
+    $$('.hero .rv').forEach(el => el.classList.add('now', 'in')); void document.body.offsetWidth;
     const rest = $$('.ichip', cloud); const flyers = $$('.fchip.fly', cloud);
     G.killTweensOf([...rest, ...flyers]);
     const vh = innerHeight;
-    const tl = G.timeline({ onComplete: () => intro.remove() });
-    tl.to('.intro-arrow .ia', { strokeDashoffset: 0, duration: .6, ease: 'power2.out' }, 0)
-      .to('.intro-head', { opacity: 1, scale: 1, duration: .25, ease: 'back.out(2)' }, .55)
-      .to(rest, { y: (i, el) => -(vh * .85 + (i % 5) * 70), x: (i, el) => (50 - parseFloat(el.style.left)) * 2.4, rotation: i => (i % 2 ? 6 : -6), opacity: 0, duration: .75, ease: 'power3.inOut', stagger: { each: .005, from: 'random' } }, .15);
+    const tl = G.timeline({ onComplete: () => { intro.remove(); $$('.hero .rv.now').forEach(el => el.classList.remove('now')); $('.hero').classList.add('rdy'); } });
+    const ang = Math.atan2((12 - 57) / 100 * innerHeight, (78 - 64) / 100 * innerWidth) * 180 / Math.PI; G.set('.intro-head', { rotation: ang, scale: 0, transformOrigin: '28% 50%' });
+    tl.to('.intro-arrow .ia', { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut' }, 0)
+      .to('.intro-head', { opacity: 1, scale: 1, rotation: ang, duration: .18, ease: 'back.out(3)' }, .62);
+    tl.to(rest, { y: (i, el) => -(vh * .85 + (i % 5) * 70), x: (i, el) => (50 - parseFloat(el.style.left)) * 2.4, rotation: i => (i % 2 ? 6 : -6), opacity: 0, duration: .75, ease: 'power3.inOut', stagger: { each: .005, from: 'random' } }, .15);
     flyers.forEach((el, i) => {
       const t = $(`.board .fchip[data-fly="${el.dataset.fly}"]`);
       if (!t || !t.offsetParent) { tl.to(el, { y: -vh, opacity: 0, duration: .7, ease: 'power3.inOut' }, .2); return; }
@@ -380,9 +459,9 @@
       const dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2);
       tl.to(el, { x: '+=' + dx, y: '+=' + dy, rotation: 0, duration: .8, ease: 'power3.inOut', onComplete: () => { G.set(t, { opacity: 1 }); el.style.opacity = 0; } }, .22 + i * .04);
     });
-    tl.to('.intro-bg', { opacity: 0, duration: .45, ease: 'power2.out' }, .42)
+    tl.to('.intro-bg', { opacity: 0, duration: .3, ease: 'power2.out' }, innerWidth < 700 ? .6 : .45)
       .add(() => heroIntro(true), .42)
-      .to('.intro-arrow, .intro-head', { opacity: 0, y: -30, duration: .3 }, .85);
+      .to('.intro-arrow, .intro-head', { opacity: 0, duration: .35, ease: 'power2.out' }, 1.05);
   };
   if (intro && cloud && G && !reduce) {
     buildIntro();
@@ -390,7 +469,23 @@
     const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
     Promise.race([fontsReady, new Promise(r => setTimeout(r, 650))]).then(() => setTimeout(start, 120));
     setTimeout(start, 1100);
-  } else { if (intro) intro.remove(); if (document.readyState === 'complete') heroIntro(); else addEventListener('load', () => heroIntro()); }
+    setTimeout(() => { const el = $('#intro'); if (el) { el.remove(); $$('.hero .rv').forEach(x => { x.classList.add('in'); x.classList.remove('now'); }); } $('.hero').classList.add('rdy'); }, 3200);
+  } else { if (intro) intro.remove(); $('.hero').classList.add('rdy'); if (document.readyState === 'complete') heroIntro(); else addEventListener('load', () => heroIntro()); }
+  addEventListener('load', () => { if (ST) setTimeout(() => ST.refresh(), 200); });
+  [...document.images].forEach(i => { i.decoding = 'async'; });
+  /* nudge: if someone sits at the top for a while, hint that the story is below; never shown twice */
+  { const toast = $('#toast'); let shown = false, hideT; const say = (t, ms = 5000) => { if (!toast) return; toast.lastElementChild.textContent = t; toast.classList.add('on'); clearTimeout(hideT); hideT = setTimeout(() => toast.classList.remove('on'), ms); };
+    const idle = setTimeout(() => { if (!shown && scrollY < 80 && !document.hidden) { shown = true; say('Scroll to see the climb ↓'); } }, 9000);
+    addEventListener('scroll', () => { if (scrollY > 80) { clearTimeout(idle); if (toast && toast.classList.contains('on')) toast.classList.remove('on'); } }, { passive: true });
+    const tt = $('#toTop'); if (tt) { addEventListener('scroll', () => tt.classList.toggle('on', scrollY > innerHeight * 1.5), { passive: true }); tt.addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); cleanUrl(); }); } }
+  { const mf = $$('.case .money-fx'); if (mf.length) { const mio = new IntersectionObserver(es => es.forEach(x => x.target.classList.toggle('vis', x.isIntersecting)), { threshold: .05 }); mf.forEach(m => mio.observe(m.closest('.case'))); } }
+  { const wk = $('.week'); if (wk) new IntersectionObserver(es => es.forEach(x => wk.classList.toggle('run', x.isIntersecting)), { threshold: .1 }).observe(wk); }
+  $$('.fcard').forEach(f => f.addEventListener('click', e => { if (!e.target.closest('a')) f.classList.toggle('hov'); }));
+  /* copy guard: images, right-click, copy/cut, drag, save/view-source/print shortcuts */
+  document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
+  document.addEventListener('dragstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
+  ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!e.target.closest('input, textarea')) { e.preventDefault(); if (e.clipboardData) e.clipboardData.setData('text/plain', '© Pinnakle Media · pinnaklemedia.com'); } }));
+  document.addEventListener('keydown', e => { const k = e.key.toLowerCase(); if ((e.metaKey || e.ctrlKey) && ['s', 'u', 'p', 'a', 'c', 'x'].includes(k) && !e.target.closest('input, textarea')) e.preventDefault(); if (k === 'f12' || ((e.metaKey || e.ctrlKey) && e.shiftKey && ['i', 'j', 'c'].includes(k))) e.preventDefault(); });
 
   /* ---------------- scroll-driven bits ---------------- */
   if (G && ST && !reduce) {
@@ -408,8 +503,24 @@
       if (pills.length) tl.fromTo(pills, { opacity: 0, scaleY: .3, transformOrigin: 'bottom' }, { opacity: 1, scaleY: 1, duration: .6, ease: 'power3.out', stagger: .08 }, 0);
     });
     const pf = $('#pipeFill'); if (pf) G.to(pf, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', scrollTrigger: { trigger: '.pipe', start: 'top 80%', once: true } });
+    G.fromTo('.pstep', { x: 90, opacity: 0 }, { x: 0, opacity: 1, duration: .9, ease: 'power3.out', stagger: .14, scrollTrigger: { trigger: '.pipe', start: 'top 82%', once: true } });
+    G.fromTo('.week', { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: '.week', start: 'top 88%', once: true } });
+    G.fromTo('.pb-side', { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.playbook', start: 'top 80%', once: true } });
+    const pipe = $('.pipe'); if (pipe) { const dot = document.createElement('i'); dot.className = 'pipe-dot'; pipe.appendChild(dot); const steps = $$('.pstep'); G.fromTo(dot, { left: '4%' }, { left: '96%', ease: 'none', scrollTrigger: { trigger: pipe, start: 'top 85%', end: 'bottom 25%', scrub: .4, onUpdate: st => { const k = Math.min(steps.length - 1, Math.floor(st.progress * steps.length)); steps.forEach((s, i) => s.classList.toggle('lit', i === k)); } } }); }
+    if (pbEl && D.playbooks) {
+      if (innerWidth > 860) {
+        const fit = () => { pbEl.classList.remove('compact', 'tight'); if (innerHeight < 960) pbEl.classList.add('compact'); if (innerHeight < 740) pbEl.classList.add('tight'); ST.refresh(); $$('.pb-dial .dl').forEach((x, k) => { if (x.classList.contains('on')) { const cur = $('.dl-cursor'); if (cur) G.set(cur, { y: k * (pbEl.classList.contains('compact') ? 42 : 50) }); } }); };
+        setTimeout(fit, 80); addEventListener('load', () => setTimeout(fit, 300)); addEventListener('resize', fit);
+        ST.create({ trigger: pbEl, start: 'top 76px', end: '+=' + (D.playbooks.length * 330), pin: true, pinSpacing: true, anticipatePin: 1, invalidateOnRefresh: true, refreshPriority: -1, onUpdate: st => { const k = Math.min(D.playbooks.length - 1, Math.floor(st.progress * D.playbooks.length)); setPlaybook(k); }, onToggle: st => document.body.classList.toggle('themed', st.isActive) });
+      } else {
+        let k = 0; setInterval(() => { if (pbManual || document.hidden) return; const r = pbEl.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; k = (k + 1) % D.playbooks.length; setPlaybook(k); }, 5200);
+        ST.create({ trigger: pbEl, start: 'top 70%', end: 'bottom 30%', onToggle: st => document.body.classList.toggle('themed', st.isActive) });
+      }
+    }
   } else { $$('.viz .bar, .viz .dot, .viz .sc, .viz .cell').forEach(e => e.style.transform = 'none'); }
 
+  /* mobile: nudge the case strip once so the swipe is obvious */
+  if (G && !fine && bento && 'IntersectionObserver' in window) new IntersectionObserver((es, o) => es.forEach(x => { if (x.isIntersecting) { G.fromTo(bento, { scrollLeft: 0 }, { scrollLeft: 56, duration: .55, delay: .5, yoyo: true, repeat: 1, ease: 'power2.inOut' }); o.disconnect(); } }), { threshold: .4 }).observe(bento);
   /* case tilt (fine pointers only) */
   if (fine && !reduce) $$('.case').forEach(card => {
     card.addEventListener('mousemove', e => { const r = card.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; card.style.transform = `perspective(900px) rotateX(${(-y * 4).toFixed(2)}deg) rotateY(${(x * 5).toFixed(2)}deg) translateY(-4px)`; });
@@ -431,7 +542,16 @@
   setStage(); addEventListener('resize', setStage);
   const stationT = [0.02, 0.26, 0.5, 0.74, 0.98];
   const smooth = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const START = { y: 2022, m: 10 }, TOTAL = 46; /* Nov 2022 → Sep 2026 */
+  let lastOdo = -1;
+  const setOdo = (p, mEl, yEl, stripEl) => { const k = Math.round(clamp(p, 0, 1) * TOTAL); if (k === lastOdo) return; lastOdo = k; const mi = (START.m + k) % 12, yy = START.y + Math.floor((START.m + k) / 12); if (mEl) { mEl.textContent = MONTHS[mi]; mEl.classList.remove('tick'); void mEl.offsetWidth; mEl.classList.add('tick'); } if (yEl && yEl.textContent !== String(yy)) { yEl.textContent = yy; yEl.classList.remove('tick'); void yEl.offsetWidth; yEl.classList.add('tick'); } if (stripEl) stripEl.innerHTML = `<tspan>${MONTHS[mi]}</tspan> ${yy}`; };
+  const head = $('#ascentPin .ascent-head'), hlEl = $('#ascentHl');
+  const scenes = $$('#ascentPin .scene');
   const setProgress = p => {
+    if (scenes.length) { let si = 0; stationT.forEach((t, i) => { if (p >= t - .02) si = i; }); scenes.forEach((sc, i) => sc.classList.toggle('on', i === si)); $('#ascentPin').classList.toggle('night', si === 4); }
+    setOdo(p, $('#odoM'), $('#odoY'), null);
+    if (head && hlEl) { let yi = 0; stationT.forEach((t, i) => { if (p >= t - .02) yi = i; }); const hl = D.timeline[yi].hl || D.timeline[yi].title; if (hlEl.dataset.hl !== hl) { hlEl.dataset.hl = hl; hlEl.innerHTML = [...hl].map((ch, k) => ch === ' ' ? ' ' : `<span class="ch" style="--i:${k}">${esc(ch)}</span>`).join(''); } head.classList.toggle('live', p > .03); }
     $$('.station').forEach((s, i) => s.classList.toggle('on', p >= stationT[i] - .02));
     $$('.yearcard').forEach((c, i) => c.classList.toggle('on', p >= stationT[i] - .02 && (i === 4 || p < stationT[i + 1] - .02)));
     const done = $('#cableDone'); if (done) { const len = done.getTotalLength(); done.style.strokeDasharray = len; done.style.strokeDashoffset = len * (1 - p); }
@@ -440,9 +560,9 @@
       const o = fin * fout; if (G) G.set(v, { opacity: o, scale: .8 + .2 * o, y: (1 - o) * 10, transformOrigin: '50% 100%' }); else v.style.opacity = o;
     });
   };
-  if (stage && svgA && G && ST && MP && !reduce && innerWidth > 1000) {
+  if (stage && svgA && G && ST && MP && !reduce && innerWidth > 1100) {
     G.set('#gondola', { transformOrigin: '50% 100%' });
-    const tl = G.timeline({ scrollTrigger: { trigger: '#ascentPin', start: 'top 72px', end: '+=1700', pin: true, pinSpacing: true, anticipatePin: 1, scrub: .5, invalidateOnRefresh: true, onUpdate: s => setProgress(s.progress) } });
+    const tl = G.timeline({ scrollTrigger: { trigger: '#ascentPin', start: 'top 72px', end: '+=1300', pin: true, pinSpacing: true, anticipatePin: 1, scrub: .5, invalidateOnRefresh: true, onUpdate: s => setProgress(s.progress) } });
     tl.to('#gondola', { motionPath: { path: '#cableDone', align: '#cableDone', alignOrigin: [0.5, 1], autoRotate: true }, ease: 'none', duration: 1 }, 0);
     tl.to('#gondola .wheel', { rotation: 1080, transformOrigin: '50% 50%', ease: 'none', duration: 1 }, 0);
     G.to('#gondola .flame', { scaleX: .55, duration: .11, yoyo: true, repeat: -1, transformOrigin: '100% 50%', ease: 'sine.inOut' });
@@ -458,6 +578,8 @@
       const line = innerHeight * .5; let f = 0;
       cards.forEach((c, i) => { const r = c.getBoundingClientRect(); const on = r.top < line; c.classList.toggle('on', on); if (on) f = i + clamp((line - r.top) / (r.height + 14), 0, 1) * .999; });
       const p = clamp(f / (cards.length - 1), 0, 1);
+      setOdo(p, null, null, $('#odoStrip'));
+      { let yi = 0; sT.forEach((t, i) => { if (p >= t - .02) yi = i; }); const sh = $('#stripHl'), sl = $('#stripLbl'); const hl = D.timeline[yi].hl || D.timeline[yi].title; if (sh && sh.dataset.hl !== hl) { sh.dataset.hl = hl; sh.innerHTML = [...hl].map((ch, k) => ch === ' ' ? ' ' : `<span class="ch" style="--i:${k}">${esc(ch)}</span>`).join(''); if (sl) sl.textContent = `${D.timeline[yi].year} · ${D.timeline[yi].label}`; } const strip = $('#ascentStrip'); if (strip && strip.dataset.scene !== String(yi)) strip.dataset.scene = yi; }
       done.style.strokeDashoffset = len * (1 - p);
       const pt = done.getPointAtLength(p * len), pt2 = done.getPointAtLength(Math.min(len, p * len + 4));
       const ang = Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180 / Math.PI;
@@ -469,7 +591,7 @@
     addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
   }
   /* station click → jump card */
-  $$('.station').forEach(s => s.addEventListener('click', () => { const i = +s.dataset.i; $$('.yearcard').forEach((c, j) => c.classList.toggle('on', j === i)); }));
+  $$('.station').forEach(s => s.addEventListener('click', () => openYear(+s.dataset.i)));
 
   /* active nav */
   if ('IntersectionObserver' in window) {
