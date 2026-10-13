@@ -263,10 +263,6 @@
   /* ---------------- render: team ---------------- */
   const founders = $('#founders');
   if (founders) founders.innerHTML = D.team.founders.map((f, i) => `<div class="fcard rv"><span class="fnum">${i === 0 ? 'Founder · since Dec 2022' : 'Co-founder · since Dec 2022'}</span><img src="${f.photo}" alt="${esc(f.name)}" data-ini="${initials(f.name)}" onerror="PMimgFail(this)"><div><h4>${esc(f.name)}</h4><div class="role">${esc(f.role)}</div><p>${esc(f.text)}</p><div class="fx">${(f.chips || []).map(c => `<span>${esc(c)}</span>`).join('')}</div>${f.li ? `<a class="li" href="${f.li}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}</div></div>`).join('');
-  const teamNow = $('#teamNow');
-  if (teamNow) teamNow.innerHTML = D.team.now.map(([n, r], i) => `<div class="tm rv" data-d="${i % 5}"><b>${esc(n)}</b><span>${esc(r)}</span></div>`).join('');
-  const alumni = $('#alumni');
-  if (alumni) alumni.innerHTML = `<b>Editors and teammates who shaped the work since 2022:</b> ${D.team.alumni.map(esc).join(' · ')}.`;
 
   const svc = $('#svc');
   if (svc && D.services) {
