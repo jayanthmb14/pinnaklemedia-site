@@ -163,7 +163,7 @@
       <g class="gondola" id="gondola">${VEH.map((v, i) => `<g class="vwrap" transform="translate(-40,-44)"><g class="vslot" data-v="${i}">${v}</g></g>`).join('')}</g>`;
     stage.insertAdjacentHTML('beforeend', D.timeline.map((t, i) => {
       const above = i <= 2; const left = ST_X[i] / 1200 * 100, top = ST_Y[i] / 520 * 100;
-      return `<div class="yearcard" data-i="${i}" data-year-i="${i}" style="left:${left}%;top:${top}%;transform-origin:center;${above ? (i === 2 ? 'translate:-50% calc(-100% - 36px)' : 'translate:-50% calc(-100% - 70px)') : 'translate:-50% 104px'}"><div class="yhead"><h4>${esc(t.hl || t.title)}</h4><svg class="yveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div><p>${esc(t.text)}</p>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div><span class="ycta">Read the full ${t.year} story →</span></div>`;
+      return `<div class="yearcard" data-i="${i}" data-year-i="${i}" style="left:${left}%;top:${top}%;transform-origin:center;${above ? 'translate:-50% calc(-100% - 70px)' : 'translate:-50% 104px'}"><div class="yhead"><h4>${esc(t.hl || t.title)}</h4><svg class="yveh" viewBox="0 0 80 44" aria-hidden="true">${VEH[i]}</svg></div>${statsHtml(t)}<div class="faces">${facesHtml(t)}</div><span class="ycta">Read the full ${t.year} story →</span></div>`;
     }).join(''));
   }
   const mob = $('#ascentMobile'), stripSvg = $('#stripSvg');
@@ -535,9 +535,7 @@
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const START = { y: 2022, m: 10 }, TOTAL = 46; /* Nov 2022 → Sep 2026 */
   let lastOdo = -1;
-  const ST_M = [0, 4, 14, 26, 38], END_M = 46; /* month index at each station: Nov 22, Mar 23, Jan 24, Jan 25, Jan 26 → Sep 26 */
-  const monthAt = p => { p = clamp(p, 0, 1); for (let i = 0; i < stationT.length; i++) { const a = stationT[i], b = i < stationT.length - 1 ? stationT[i + 1] : 1, ma = ST_M[i], mb = i < stationT.length - 1 ? ST_M[i + 1] : END_M; if (p <= a) return ma; if (p < b) return Math.round(ma + (p - a) / (b - a) * (mb - ma)); } return END_M; };
-  const setOdo = (p, mEl, yEl, stripEl) => { const k = monthAt(p); if (k === lastOdo) return; lastOdo = k; const mi = (START.m + k) % 12, yy = START.y + Math.floor((START.m + k) / 12); if (mEl) { mEl.textContent = MONTHS[mi]; mEl.classList.remove('tick'); void mEl.offsetWidth; mEl.classList.add('tick'); } if (yEl && yEl.textContent !== String(yy)) { yEl.textContent = yy; yEl.classList.remove('tick'); void yEl.offsetWidth; yEl.classList.add('tick'); } if (stripEl) stripEl.innerHTML = `<tspan>${MONTHS[mi]}</tspan> ${yy}`; };
+  const setOdo = (p, mEl, yEl, stripEl) => { const k = Math.round(clamp(p, 0, 1) * TOTAL); if (k === lastOdo) return; lastOdo = k; const mi = (START.m + k) % 12, yy = START.y + Math.floor((START.m + k) / 12); if (mEl) { mEl.textContent = MONTHS[mi]; mEl.classList.remove('tick'); void mEl.offsetWidth; mEl.classList.add('tick'); } if (yEl && yEl.textContent !== String(yy)) { yEl.textContent = yy; yEl.classList.remove('tick'); void yEl.offsetWidth; yEl.classList.add('tick'); } if (stripEl) stripEl.innerHTML = `<tspan>${MONTHS[mi]}</tspan> ${yy}`; };
   const head = $('#ascentPin .ascent-head'), hlEl = $('#ascentHl');
   const scenes = $$('#ascentPin .scene');
   const setProgress = p => {
@@ -554,7 +552,7 @@
   };
   if (stage && svgA && G && ST && MP && !reduce && innerWidth > 1100) {
     G.set('#gondola', { transformOrigin: '50% 100%' });
-    const tl = G.timeline({ scrollTrigger: { trigger: '#ascentPin', start: 'top 72px', end: '+=2000', pin: true, pinSpacing: true, anticipatePin: 1, scrub: .8, invalidateOnRefresh: true, onUpdate: s => setProgress(s.progress) } });
+    const tl = G.timeline({ scrollTrigger: { trigger: '#ascentPin', start: 'top 72px', end: '+=1300', pin: true, pinSpacing: true, anticipatePin: 1, scrub: .5, invalidateOnRefresh: true, onUpdate: s => setProgress(s.progress) } });
     tl.to('#gondola', { motionPath: { path: '#cableDone', align: '#cableDone', alignOrigin: [0.5, 1], autoRotate: true }, ease: 'none', duration: 1 }, 0);
     tl.to('#gondola .wheel', { rotation: 1080, transformOrigin: '50% 50%', ease: 'none', duration: 1 }, 0);
     G.to('#gondola .flame', { scaleX: .55, duration: .11, yoyo: true, repeat: -1, transformOrigin: '100% 50%', ease: 'sine.inOut' });
@@ -646,6 +644,4 @@
       tree.addEventListener('click', e => { if (!mob()) return; const hd = e.target.closest('.tr-head'); if (!hd || e.target.closest('a')) return; const b = hd.closest('.tr-branch'); const open = b.classList.contains('open'); br.forEach(x => x.classList.remove('open')); if (!open) { b.classList.add('open'); setTimeout(() => hd.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); } }); }
     $$('.fcard').forEach(c => { const p = c.querySelector('p'); if (!p) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'readmore only-m'; b.textContent = 'Read more'; p.after(b); b.addEventListener('click', () => { const m = c.classList.toggle('more'); b.textContent = m ? 'Show less' : 'Read more'; }); });
   })();
-  /* layout settles late (lazy images, fonts): recompute every pin once it has */
-  if (ST) { const rf = () => ST.refresh(); addEventListener('load', () => { setTimeout(rf, 800); setTimeout(rf, 2500); setTimeout(rf, 5000); }); if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(rf, 100)); }
 })();
