@@ -407,3 +407,7 @@ footer{background:#fff;padding:30px 0 26px;border-top:1px solid var(--line)}
 .st-rail i{animation:none;transition:left .9s var(--ease),transform .4s var(--ease)}
 /* niche image: slight slide, not only a fade */
 .ni-stack img{transform:translateX(26px) scale(1.03)}.ni-stack img.on{transform:none}.ni-stack img.out{opacity:0;transform:translateX(-18px) scale(1)}
+
+/* three-way switch */
+.switch.three .sw-knob{width:calc(33.333% - 2px)}.switch.three[data-on="studio"] .sw-knob{transform:translateX(0)}.switch.three[data-on="flow"] .sw-knob{transform:translateX(100%)}.switch.three[data-on="os"] .sw-knob{transform:translateX(200%);background:linear-gradient(135deg,#0F0F0F,#3A3834)}
+.switch.three .sw{padding:7px 12px}

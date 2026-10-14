@@ -2,42 +2,34 @@ User-agent: *
 Allow: /
 Sitemap: https://pinnaklemedia.com/sitemap.xml
 
-# AI / bulk scrapers
+# AI assistants and AI search are welcome to read and cite this site.
 User-agent: GPTBot
-Disallow: /
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
 User-agent: ChatGPT-User
-Disallow: /
-User-agent: CCBot
-Disallow: /
+Allow: /
 User-agent: ClaudeBot
-Disallow: /
+Allow: /
 User-agent: anthropic-ai
-Disallow: /
-User-agent: Google-Extended
-Disallow: /
-User-agent: Bytespider
-Disallow: /
+Allow: /
 User-agent: PerplexityBot
-Disallow: /
-User-agent: Amazonbot
-Disallow: /
-User-agent: FacebookBot
-Disallow: /
+Allow: /
+User-agent: Google-Extended
+Allow: /
 User-agent: Applebot-Extended
-Disallow: /
-User-agent: omgili
-Disallow: /
-User-agent: Diffbot
-Disallow: /
-User-agent: ImagesiftBot
-Disallow: /
-User-agent: cohere-ai
-Disallow: /
+Allow: /
+User-agent: Amazonbot
+Allow: /
+
+# Bulk copiers
 User-agent: HTTrack
 Disallow: /
 User-agent: WebCopier
 Disallow: /
-User-agent: Wget
+User-agent: Bytespider
 Disallow: /
-User-agent: curl
+User-agent: omgili
+Disallow: /
+User-agent: ImagesiftBot
 Disallow: /

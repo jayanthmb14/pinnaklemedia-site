@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pinnakle OS | The app that runs the studio · how a client's content moves from raw footage to posted</title>
+<meta name="description" content="Pinnakle OS is the management app Pinnakle Media built to run its own video studio: every cut is a card with a status, an owner, a QC checklist and a review link, and every client gets a portal. Here is what it does, how a video moves through it, and how to get in.">
+<link rel="canonical" href="https://pinnaklemedia.com/os/">
+<meta property="og:title" content="Pinnakle OS · the app that runs Pinnakle Media">
+<meta property="og:description" content="Raw received → editing → QC → your review → approved → posted. One board, one login, one Friday report.">
+<meta property="og:image" content="https://pinnaklemedia.com/assets/og.jpg">
+<meta name="keywords" content="Pinnakle OS, video agency management software, content production tracker, QC checklist for video editing, client portal for video agency, Pinnakle Media, pinnaklemedia.app">
+<meta name="theme-color" content="#FBFAF7">
+<link rel="icon" type="image/svg+xml" href="../assets/brand/icon-dark-square.svg">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/bricolage.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/geist.woff2">
+<link rel="stylesheet" href="../styles.css?v=20261014">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Pinnakle OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://pinnaklemedia.app/","author":{"@type":"Organization","name":"Pinnakle Media","url":"https://pinnaklemedia.com/"},"description":"Management app for video and content agencies: boards per client, QC checklists, review links, client portal, posting calendar and weekly reports.","offers":{"@type":"Offer","url":"https://pinnaklemedia.app/pricing"}}</script>
+<style>
+/* page-only styles; tokens come from ../styles.css */
+body{background:var(--bg)}
+.os-hero{padding:clamp(40px,6vw,84px) 0 clamp(30px,4vw,50px)}
+.os-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(28px,4vw,60px);align-items:center}
+.os-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-l);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;margin-bottom:18px}.os-tag i{width:8px;height:8px;border-radius:50%;background:var(--grad)}
+.os-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+/* app mock */
+.osapp{background:#fff;border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--sh-lg);overflow:hidden;font-size:12.5px}
+.osapp .bar{display:flex;align-items:center;gap:8px;height:38px;padding:0 14px;background:var(--bg-2);border-bottom:1px solid var(--line)}.osapp .bar i{width:10px;height:10px;border-radius:50%;background:#E0E6E1}.osapp .bar i:nth-child(1){background:#FF5F57}.osapp .bar i:nth-child(2){background:#FEBC2E}.osapp .bar i:nth-child(3){background:#28C840}.osapp .url{margin-left:10px;flex:1;height:22px;border-radius:7px;background:#fff;border:1px solid var(--line);font-family:var(--font-l);font-size:10.5px;color:var(--ink-3);display:flex;align-items:center;padding:0 10px}.osapp .url b{color:var(--orange-deep)}
+.osapp .body{display:grid;grid-template-columns:150px 1fr;min-height:400px}
+.osapp .side{background:var(--bg-2);border-right:1px solid var(--line);padding:12px 10px;display:flex;flex-direction:column;gap:3px}.osapp .side span{padding:7px 10px;border-radius:9px;font-size:12px;color:var(--ink-2)}.osapp .side span.on{background:#fff;font-weight:700;color:var(--ink);box-shadow:var(--sh)}.osapp .side .lbl{font-family:var(--font-l);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);padding:10px 10px 4px}
+.osapp .main{padding:14px;display:flex;flex-direction:column;gap:12px}
+.osapp .top{display:flex;justify-content:space-between;align-items:center}.osapp .top b{font-size:14px}.osapp .pill{font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:999px;background:var(--yellow-soft);color:#7A5B00}
+.kan{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;flex:1}
+.kan .col{background:var(--bg-2);border-radius:10px;padding:6px;min-height:230px}.kan h5{margin:0 0 6px;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between}.kan h5 span{font-family:var(--font-l);color:var(--ink-4)}
+.kc{background:#fff;border:1px solid var(--line);border-left:3px solid var(--kc,#F6951B);border-radius:8px;padding:6px 7px;margin-bottom:6px;transition:transform .6s var(--ease),box-shadow .4s}.kc b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kc span{display:block;font-size:9.5px;color:var(--ink-3)}.kc em{font-style:normal;font-family:var(--font-l);font-size:9px;color:var(--ink-4)}
+.kc.moving{box-shadow:0 14px 30px -12px rgba(246,149,27,.6);border-color:var(--orange)}
+.oslog{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:5px;font-size:11px;color:var(--ink-3)}.oslog div{display:flex;gap:8px;align-items:center}.oslog i{width:6px;height:6px;border-radius:50%;background:var(--grad);flex:none}.oslog b{color:var(--ink)}
+/* status pipeline */
+.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;position:relative;margin-top:26px}
+.stages::before{content:"";position:absolute;left:6%;right:6%;top:26px;height:2px;background:var(--line-2)}.stages .fill{position:absolute;left:6%;top:26px;height:2px;width:0;background:var(--grad);transition:width 1.6s var(--ease)}.stages.in .fill{width:88%}
+.stg{position:relative;padding-top:54px;text-align:center}.stg::before{content:attr(data-n);position:absolute;left:50%;top:8px;width:36px;height:36px;border-radius:50%;background:#fff;border:2px solid var(--line-2);transform:translateX(-50%);display:grid;place-items:center;font-family:var(--font-d);font-weight:800;font-size:13px;transition:border-color .4s calc(var(--i)*.25s),background .4s calc(var(--i)*.25s)}.stages.in .stg::before{border-color:var(--orange);background:var(--yellow-soft)}
+.stg b{display:block;font-size:14px;margin-bottom:4px}.stg span{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.45}
+/* feature grid */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ft{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:8px;transition:transform .5s var(--ease),box-shadow .5s}.ft:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.ft .ic{width:40px;height:40px;border-radius:12px;background:var(--yellow-soft);display:grid;place-items:center;font-size:19px}.ft h4{margin:4px 0 0;font-family:var(--font-d);font-size:17px;letter-spacing:-.02em}.ft p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5}.ft small{font-family:var(--font-l);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+/* portal */
+.portal{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px);align-items:center}
+.portal ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.portal li{padding:11px 14px 11px 40px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:14px;color:var(--ink-2);position:relative}.portal li::before{content:"";position:absolute;left:14px;top:15px;width:14px;height:14px;border-radius:50%;background:var(--grad)}.portal li::after{content:"";position:absolute;left:18.5px;top:18px;width:4px;height:7px;border:solid #0F0F0F;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.phone-os{width:300px;margin:0 auto;background:var(--ink);border-radius:36px;padding:12px;box-shadow:var(--sh-lg)}.phone-os .scr{background:#fff;border-radius:26px;padding:14px;min-height:420px;display:flex;flex-direction:column;gap:10px}
+.rvw{border:1px solid var(--line);border-radius:12px;padding:10px}.rvw b{display:block;font-size:12.5px}.rvw span{font-size:11px;color:var(--ink-3)}.rvw .vid{height:120px;border-radius:8px;background:linear-gradient(135deg,#0F0F0F,#3A3834);margin:8px 0;display:grid;place-items:center;color:#fff;font-size:11px}
+.rvw .ok{display:flex;gap:6px}.rvw .ok span{flex:1;text-align:center;padding:7px;border-radius:8px;font-size:11.5px;font-weight:700;border:1px solid var(--line)}.rvw .ok .y{background:var(--grad);border-color:transparent;color:#0F0F0F}
+.note{background:var(--yellow-soft);border-radius:10px;padding:8px 10px;font-size:11px;color:#5A4400}.note b{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7A5B00}
+/* roles */
+.roles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.rl{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}.rl b{display:block;font-family:var(--font-d);font-size:16px;letter-spacing:-.02em}.rl p{margin:6px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.5}.rl small{font-family:var(--font-l);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange-deep)}
+/* safe */
+.safe{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.safe div{background:var(--bg-2);border-radius:14px;padding:16px;font-size:13.5px;color:var(--ink-2)}.safe b{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+/* three sites */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tsite{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}.tsite.on{border-color:var(--ink);box-shadow:var(--sh-lg)}.tsite h4{margin:0;font-family:var(--font-d);font-size:22px;letter-spacing:-.02em}.tsite p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.5;flex:1}.tsite a.go{font-weight:700;font-size:13px;color:var(--ink)}.tsite .dot{width:34px;height:6px;border-radius:3px;background:var(--grad)}.tsite.flow .dot{background:linear-gradient(90deg,#0F8A5F,#2EC48A)}.tsite.os .dot{background:#0F0F0F}
+.cta-os{background:var(--ink);color:#fff;border-radius:28px;padding:clamp(28px,5vw,60px);display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;position:relative;overflow:hidden}.cta-os::before{content:"";position:absolute;right:-20%;top:-40%;width:60%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(251,225,0,.3),transparent 65%)}.cta-os .lead{color:rgba(255,255,255,.75)}.cta-os .h2{color:#fff}.cta-os .em{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta-os ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:rgba(255,255,255,.8)}.cta-os li::before{content:"✓ ";color:var(--yellow)}
+@media(max-width:1000px){.os-grid{grid-template-columns:1fr}.feat{grid-template-columns:1fr 1fr}.roles{grid-template-columns:repeat(3,1fr)}.safe{grid-template-columns:1fr 1fr}.kan{grid-template-columns:repeat(3,1fr)}.kan .col:nth-child(n+4){display:none}}
+@media(max-width:860px){.stages{grid-template-columns:1fr 1fr;gap:14px}.stages::before,.stages .fill{display:none}.stg{padding:14px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;padding-left:54px}.stg::before{left:14px;top:12px;transform:none;width:30px;height:30px;font-size:12px}.portal{grid-template-columns:1fr}.three{grid-template-columns:1fr}.cta-os{grid-template-columns:1fr}.osapp .side{display:none}.osapp .body{grid-template-columns:1fr}.roles{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.feat{grid-template-columns:1fr}.safe{grid-template-columns:1fr}.kan{grid-template-columns:1fr 1fr}.kan .col:nth-child(n+3){display:none}.phone-os{width:min(280px,86vw)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gl" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#F6951B"/><stop offset="1" stop-color="#FBE100"/></linearGradient></defs></svg>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="/" aria-label="Pinnakle Media"><img src="../assets/brand/logo.svg" alt="Pinnakle Media"></a>
+    <div class="switch three" data-on="os" role="group" aria-label="Pinnakle sites"><a href="/" class="sw"><i></i>Studio</a><a href="/flow/" class="sw"><i></i>Flow</a><a href="/os/" class="sw on"><i></i>OS</a><span class="sw-knob" aria-hidden="true"></span></div>
+    <nav class="nav-links" aria-label="Sections">
+      <div class="switch three only-m" data-on="os"><a href="/" class="sw"><i></i>Studio</a><a href="/flow/" class="sw"><i></i>Flow</a><a href="/os/" class="sw on"><i></i>OS</a><span class="sw-knob" aria-hidden="true"></span></div>
+      <a href="#how">How a video moves</a><a href="#inside">What is inside</a><a href="#portal">Your portal</a><a href="#roles">Who sees what</a><a href="#safe">Safe by design</a>
+    </nav>
+    <a class="btn btn-primary cta-desk" href="https://pinnaklemedia.app/login" target="_blank" rel="noopener"><span class="dot"></span>Open Pinnakle OS <span class="arrow">→</span></a>
+    <a class="btn btn-primary cta-mob" href="https://pinnaklemedia.app/login" target="_blank" rel="noopener">Open OS</a>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+<section class="os-hero">
+  <div class="wrap os-grid">
+    <div>
+      <div class="os-tag rv"><i></i>Pinnakle OS · pinnaklemedia.app</div>
+      <h1 class="display rv" data-d="1">The app that <span class="em">runs the studio.</span></h1>
+      <p class="lead rv" data-d="2">We could not find a project tool made for a video studio, so we built one. Every cut, carousel and post is a card with a status, an owner, a deadline and a QC checklist. Clients get a portal instead of a WhatsApp thread. It has run Pinnakle Media since September 2026 and it is open to other agencies.</p>
+      <div class="os-cta rv" data-d="3"><a class="btn btn-primary" href="https://pinnaklemedia.app/signup" target="_blank" rel="noopener"><span class="dot"></span>Start free <span class="arrow">→</span></a><a class="btn btn-ghost" href="mailto:pinnaklemedia@gmail.com?subject=Pinnakle%20OS%20demo">Ask for a demo</a></div>
+    </div>
+    <div class="osapp rv" data-d="2" id="osApp">
+      <div class="bar"><i></i><i></i><i></i><div class="url"><b>app.</b>pinnaklemedia.app/work</div></div>
+      <div class="body">
+        <div class="side"><span class="lbl">Studio</span><span>Today</span><span class="on">Work board</span><span>Clients</span><span>Calendar</span><span>Reports</span><span class="lbl">Team</span><span>Team</span><span>Learning</span><span>Check-in</span><span class="lbl">Growth</span><span>Leads</span><span>Chat</span></div>
+        <div class="main">
+          <div class="top"><b>Work board · all clients</b><span class="pill">38 cards · 6 due today</span></div>
+          <div class="kan" id="kan"></div>
+          <div class="oslog"><div><i></i><b>Darshan</b> moved “Ep 12 clips” to QC · passed 4 of 4 checks</div><div><i></i><b>Client</b> approved “Launch reel” from the review link</div><div><i></i><b>Shreedhi</b> scheduled 3 posts for Thursday 6:30 pm</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow rv">How a video moves</div><h2 class="h2 rv" data-d="1">Six statuses. <span class="em-ink">No video is ever “somewhere”.</span></h2></div>
+      <p class="lead rv" data-d="2">Every card walks the same six steps. The board on the left shows the whole studio; a client’s portal shows only their own cards. A card that sits in one status too long turns red on the founders’ screen.</p>
+    </div>
+    <div class="stages rv" data-d="2" id="stages"><i class="fill"></i>
+      <div class="stg" data-n="1" style="--i:0"><b>Raw received</b><span>Your footage lands in Drive. A card is created with the brief, the brand kit and the deadline.</span></div>
+      <div class="stg" data-n="2" style="--i:1"><b>Editing</b><span>An editor is assigned. Timestamps and hooks are on the card. Shorts are due in 24 hours.</span></div>
+      <div class="stg" data-n="3" style="--i:2"><b>QC</b><span>A second person runs the checklist: captions, fonts, hook, music licence, past corrections.</span></div>
+      <div class="stg" data-n="4" style="--i:3"><b>Your review</b><span>You get a link. Leave a note on the frame or approve with one tap. Round limits stop endless loops.</span></div>
+      <div class="stg" data-n="5" style="--i:4"><b>Approved</b><span>Final files are named, sorted by platform and dropped in your folder. Covers and captions attached.</span></div>
+      <div class="stg" data-n="6" style="--i:5"><b>Posted</b><span>Scheduled at the same hour on every platform you run. The posting log and the Friday report update themselves.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="inside">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow rv">What is inside</div><h2 class="h2 rv" data-d="1">Built for the way a <span class="em">studio actually works.</span></h2></div>
+      <p class="lead rv" data-d="2">Nothing here is a generic task tool with a video label on it. Each screen exists because the studio needed it in a real week.</p>
+    </div>
+    <div class="feat">
+      <div class="ft rv"><span class="ic">🗂️</span><small>Work</small><h4>One board per client, one for the studio</h4><p>Drag a card between the six statuses. Each card holds the brief, the raw link, timestamps, the brand kit, the editor, the round count and every note the client ever left.</p></div>
+      <div class="ft rv" data-d="1"><span class="ic">✅</span><small>QC</small><h4>A checklist on every cut</h4><p>Captions match the audio, fonts and colours match the kit, the hook sits in the first two seconds, the music is licensed, and nothing the client corrected before has come back. A cut cannot reach the client until it passes.</p></div>
+      <div class="ft rv" data-d="2"><span class="ic">🔗</span><small>Review</small><h4>Review links instead of file transfers</h4><p>The client opens a link, watches, leaves a note on the exact second, or approves. Notes go to the editor as a task. Approved files land in the client’s Drive folder with the right names.</p></div>
+      <div class="ft rv"><span class="ic">📅</span><small>Calendar</small><h4>Posting calendar and the daily update</h4><p>What goes out where and when, for every client, with the daily client update drafted from the board so the social media manager sends it in one tap.</p></div>
+      <div class="ft rv" data-d="1"><span class="ic">📈</span><small>Reports</small><h4>Friday report, written by the board</h4><p>Videos shipped, on-time rate, revisions, what is in QC and what is planned next week. The founders see the same numbers per editor and per client.</p></div>
+      <div class="ft rv" data-d="2"><span class="ic">🎓</span><small>Team</small><h4>Onboarding, learning and check-ins</h4><p>A thirty-day learning path for new editors, a weekly check-in, leave and HR in one place, and a guide page for every screen so nobody has to ask how it works.</p></div>
+      <div class="ft rv"><span class="ic">🧲</span><small>Leads</small><h4>Leads and speed to lead</h4><p>Enquiries from the website and outreach land in one list with a timer. The first reply is measured in minutes. This is where PinnakleFlow plugs in for clients who want the full follow-up system.</p></div>
+      <div class="ft rv" data-d="1"><span class="ic">💬</span><small>Chat</small><h4>Rooms per client and per division</h4><p>Threads, DMs and a huddle room with a meeting note written for you afterwards. The chat sits next to the card it is about, so context is never lost.</p></div>
+      <div class="ft rv" data-d="2"><span class="ic">🤖</span><small>Ask</small><h4>Ask the board a question</h4><p>“What is stuck for Yoshi?” “Who has room on Thursday?” The assistant answers from the board and only sees what the person asking is allowed to see.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="portal">
+  <div class="wrap portal">
+    <div>
+      <div class="eyebrow rv">Your portal</div>
+      <h2 class="h2 rv" data-d="1">What a client <span class="em">sees.</span></h2>
+      <p class="lead rv" data-d="2" style="margin:14px 0 20px">One login. Your cards, your calendar, your reports, your review links. Nothing from another client, nothing about money or HR.</p>
+      <ul class="rv" data-d="3">
+        <li>The board for your work, filtered to you, in the same six statuses</li>
+        <li>Review links with frame-level notes and one-tap approval</li>
+        <li>The posting calendar for the week, with the daily update</li>
+        <li>The Friday report and every report before it</li>
+        <li>Your brand kit: fonts, colours, logo, the words we never use</li>
+        <li>A room to talk to your team, with the history kept</li>
+      </ul>
+    </div>
+    <div class="phone-os rv" data-d="2"><div class="scr">
+      <div class="rvw"><b>Launch reel · v2</b><span>Bloom Café · due today · round 2 of 3</span><div class="vid">▶ 0:42 · captions on</div><div class="note"><b>Your note at 0:12</b>Tighten the open, the logo can come in a beat later.</div><div class="ok"><span>Request changes</span><span class="y">Approve</span></div></div>
+      <div class="rvw"><b>This week</b><span>Thu · 2 Shorts + carousel · Fri · 2 Shorts + report</span></div>
+      <div class="rvw"><b>Friday report</b><span>11 posted · 96% on time · 1 revision · next week planned</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="sec" id="roles">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow rv">Who sees what</div><h2 class="h2 rv" data-d="1">Five roles, <span class="em-ink">one app.</span></h2></div>
+      <p class="lead rv" data-d="2">Every screen is filtered by role. The same board shows a founder the whole studio and an editor only their own three cuts.</p>
+    </div>
+    <div class="roles rv" data-d="2">
+      <div class="rl"><small>Founder</small><b>The whole studio</b><p>What is stuck, who is overloaded, which client needs a call, money and HR. Only founders see pay.</p></div>
+      <div class="rl"><small>Manager</small><b>Their division</b><p>Editing managers see the QC queue and editor load. The social media manager sees the calendar and the daily updates.</p></div>
+      <div class="rl"><small>Editor / designer</small><b>Their own cards</b><p>In order of deadline, with the brief, the kit and the raw footage one tap away. No chasing in chats.</p></div>
+      <div class="rl"><small>Client</small><b>Their portal</b><p>Their board, review links, calendar, reports and brand kit. Nothing about other clients.</p></div>
+      <div class="rl"><small>Other agencies</small><b>Their own workspace</b><p>Pinnakle OS is open to other video and content agencies. Your workspace, your clients, your branding on the portal.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="safe">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow rv">Safe by design</div><h2 class="h2 rv" data-d="1">Access without <span class="em">sharing passwords.</span></h2></div>
+      <p class="lead rv" data-d="2">Platform access comes through Meta Business Suite roles, YouTube manager roles and OAuth. Pinnakle OS never asks a client for a password, and the team never sees one.</p>
+    </div>
+    <div class="safe rv" data-d="2">
+      <div><b>Role-based access</b>Every screen and every API call is checked against the person’s role. We run two and a half thousand permission checks on every release.</div>
+      <div><b>Your accounts stay yours</b>Instagram, Facebook, Google and payment accounts are connected under your own logins. Leave, and nothing is held.</div>
+      <div><b>Secrets in a vault</b>The few keys the studio must hold are encrypted at rest and visible only to the people who need them, with an audit trail.</div>
+      <div><b>Hosted close to you</b>Database and app servers sit in the same region so pages load fast, and every change is deployed with the full check suite.</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="three">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow rv">Three parts, one team</div><h2 class="h2 rv" data-d="1">Studio makes it. Flow sells it. <span class="em">OS runs it.</span></h2></div>
+      <p class="lead rv" data-d="2">The same people, three surfaces. Use the switch at the top of every page to move between them.</p>
+    </div>
+    <div class="three rv" data-d="2">
+      <a class="tsite" href="/"><span class="dot"></span><h4>Pinnakle Media · Studio</h4><p>Editing, design, writing, posting and reporting for creators and brands. Four years of case studies with the numbers attached.</p><span class="go">See the case studies →</span></a>
+      <a class="tsite flow" href="/flow/"><span class="dot"></span><h4>PinnakleFlow</h4><p>Every lead answered in sixty seconds, booked, billed and asked for a review. Runs on your own number. Start for a dollar.</p><span class="go">Watch one lead →</span></a>
+      <a class="tsite os on" href="https://pinnaklemedia.app/" target="_blank" rel="noopener"><span class="dot"></span><h4>Pinnakle OS</h4><p>The app on this page. Boards, QC, review links, portal, calendar, reports. Open to other agencies.</p><span class="go">Open the app ↗</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-os rv">
+      <div><div class="eyebrow" style="color:rgba(255,255,255,.6)">Get in</div><h2 class="h2">Run your studio on it, <span class="em">or see yours inside it.</span></h2><p class="lead" style="margin:14px 0 22px">Clients of Pinnakle Media get a portal on day one. Other agencies can start a free workspace, or write to us for a walkthrough.</p><div class="os-cta"><a class="btn btn-brand btn-call" href="https://pinnaklemedia.app/signup" target="_blank" rel="noopener"><span class="dot"></span>Start free <span class="arrow">→</span></a><a class="btn btn-ghost" href="mailto:pinnaklemedia@gmail.com?subject=Pinnakle%20OS%20demo">Ask for a demo</a></div></div>
+      <ul><li>Six statuses, QC checklist, review links, portal</li><li>Roles for founders, managers, editors, clients</li><li>Posting calendar, daily updates, Friday report</li><li>Your branding on the client portal</li><li>Built and used daily by a working video studio</li></ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap foot">
+  <a href="/"><img src="../assets/brand/logo.svg" alt="Pinnakle Media"></a>
+  <div class="switch three" data-on="os" role="group" aria-label="Pinnakle sites"><a href="/" class="sw"><i></i>Studio</a><a href="/flow/" class="sw"><i></i>Flow</a><a href="/os/" class="sw on"><i></i>OS</a><span class="sw-knob" aria-hidden="true"></span></div>
+  <div class="foot-links"><a href="/">pinnaklemedia.com</a><a href="https://pinnaklemedia.app/" target="_blank" rel="noopener">pinnaklemedia.app</a><a href="https://pinnaklemedia.app/pricing" target="_blank" rel="noopener">Pricing</a><a href="mailto:pinnaklemedia@gmail.com">Email</a></div>
+  <div>© <span data-year>2026</span> PKJMB Media Pvt Ltd · Pinnakle OS is built and run by Pinnakle Media · Bengaluru</div>
+</div>
+<div class="wrap legal">The board and portal shown on this page use demo data. Pinnakle OS is operated by PKJMB Media Pvt Ltd. Client names in the Pinnakle Media studio board are shown with consent.</div>
+</footer>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  document.querySelectorAll('[data-year]').forEach(e => e.textContent = new Date().getFullYear());
+  const nav = $('.nav'), links = $('.nav-links'), tog = $('.nav-toggle');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 8), { passive: true });
+  tog.addEventListener('click', () => { nav.classList.toggle('open'); links.classList.toggle('open'); });
+  document.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); if (!a) return; e.preventDefault(); const t = $(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); nav.classList.remove('open'); links.classList.remove('open'); });
+  const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), { threshold: .1 });
+  $$('.rv, .stages').forEach(el => io.observe(el));
+  /* demo board: six statuses, cards move along on their own */
+  const cols = ['Raw received', 'Editing', 'QC', 'Your review', 'Approved', 'Posted'];
+  const cards = [['Launch reel', 'Bloom Café', '#F6951B', 3], ['Ep 12 clips', 'Orbit Podcast', '#7E66D6', 2], ['Coach intro', 'Summit Fitness', '#0F8A5F', 1], ['Tax tips', 'Kite Finance', '#3B7FD4', 0], ['Smile story', 'Brightside Dental', '#E5484D', 4], ['Site tour', 'Juniper Homes', '#1F8199', 5], ['Menu carousel', 'Bloom Café', '#F6951B', 1], ['Ep 13 hook', 'Orbit Podcast', '#7E66D6', 0]];
+  const kan = $('#kan'); kan.innerHTML = cols.map((c, i) => `<div class="col" data-i="${i}"><h5>${c}<span>${cards.filter(k => k[3] === i).length}</span></h5></div>`).join('');
+  const colEls = $$('.col', kan); cards.forEach(([t, c, h, s], i) => colEls[s].insertAdjacentHTML('beforeend', `<div class="kc" data-i="${i}" style="--kc:${h}"><b>${t}</b><span>${c}</span><em>${['raw in', 'Navin', 'Darshan · 3/4', 'client', 'Drive', 'Thu 6:30 pm'][s]}</em></div>`));
+  const recount = () => colEls.forEach(c => { c.querySelector('h5 span').textContent = c.querySelectorAll('.kc').length; });
+  let k = 0; setInterval(() => { if (document.hidden) return; const list = $$('.kc', kan).filter(c => +c.closest('.col').dataset.i < 5); if (!list.length) return; const card = list[k % list.length]; k++; const to = colEls[+card.closest('.col').dataset.i + 1]; const a = card.getBoundingClientRect(); to.appendChild(card); const b = card.getBoundingClientRect(); card.classList.add('moving'); card.style.transition = 'none'; card.style.transform = `translate(${a.left - b.left}px,${a.top - b.top}px)`; requestAnimationFrame(() => { card.style.transition = ''; card.style.transform = ''; setTimeout(() => card.classList.remove('moving'), 700); }); recount(); if ($$('.kc', colEls[5]).length > 3) { const back = $('.kc', colEls[5]); colEls[0].appendChild(back); recount(); } }, 2600);
+})();
+</script>
+</body>
+</html>
