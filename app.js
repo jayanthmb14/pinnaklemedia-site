@@ -367,7 +367,7 @@
   /* ---------------- reveal ---------------- */
   const revealAll = () => $$('.rv').forEach(el => el.classList.add('in'));
   if (reduce || !('IntersectionObserver' in window)) revealAll();
-  else { const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); if (innerWidth <= 700 && x.target.classList.contains('case')) $$('#bento .case').forEach(c => { c.classList.add('in'); io.unobserve(c); }); if (x.target.classList.contains('playbook')) $$('[data-count]', x.target).forEach(countEl);  io.unobserve(x.target); } }), { threshold: .08, rootMargin: '0px 0px -6% 0px' }); $$('.rv').forEach(el => io.observe(el)); }
+  else { const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); if (innerWidth <= 700 && x.target.classList.contains('case')) $$('#bento .case').forEach(c => { c.classList.add('in'); io.unobserve(c); }); if (x.target.classList.contains('playbook')) $$('[data-count]', x.target).forEach(countEl);  io.unobserve(x.target); } }), { threshold: 0, rootMargin: '0px 0px 12% 0px' }); $$('.rv').forEach(el => io.observe(el)); }
 
   /* ---------------- counters + bars ---------------- */
   const fmt = (n, dec) => { const s = n.toFixed(dec); const [a, b] = s.split('.'); return a.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (b ? '.' + b : ''); };
