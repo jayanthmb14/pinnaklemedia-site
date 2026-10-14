@@ -1129,3 +1129,38 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
 .tr-pop .pin{position:absolute;right:12px;top:12px;font-family:var(--font-l);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
 @media(min-width:1001px){.tr-detail{display:none}}
 @media(max-width:1000px){.tr-pop{display:none}}
+
+/* ===== phone layout (Oct 2026): shorter page, swipe where a list was ===== */
+@media(max-width:860px){
+  .display{font-size:clamp(40px,11.5vw,54px)}
+  .hero .lead{font-size:16px}
+  /* video testimonials: one row you swipe */
+  .vgrid{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:4px var(--gut) 16px;margin:0 calc(var(--gut) * -1);scrollbar-width:none}.vgrid::-webkit-scrollbar{display:none}
+  .vgrid .vcard{flex:0 0 72%;scroll-snap-align:center}
+  /* written notes: one row */
+  .tgrid{columns:auto;display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:4px var(--gut) 16px;margin:0 calc(var(--gut) * -1);scrollbar-width:none}.tgrid::-webkit-scrollbar{display:none}
+  .tgrid>*{flex:0 0 84%;scroll-snap-align:center;break-inside:auto;margin-bottom:0}
+  /* process steps: one row */
+  .pipe-line,.pipe-dot{display:none}
+  .pipe-steps{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:4px var(--gut) 14px;margin:0 calc(var(--gut) * -1);scrollbar-width:none}.pipe-steps::-webkit-scrollbar{display:none}
+  .pstep{flex:0 0 76%;scroll-snap-align:center}
+  .week{grid-template-columns:1fr;gap:10px;padding:14px}.wk-days{grid-template-columns:repeat(7,1fr);gap:4px}.wday span{display:none}.wday b{font-size:11px}
+  /* the tree: one branch open at a time */
+  .tr-branch .tr-head{cursor:pointer}
+  .tr-branch .tr-head::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);margin:0 2px 4px 10px;transition:transform .3s;flex:none}
+  .tr-branch.open .tr-head::after{transform:rotate(-135deg);margin-bottom:-4px}
+  .tr-branch:not(.open) .tr-spine{display:none}.tr-branch:not(.open) .tr-head{margin-bottom:0}
+  .tr-branch{padding-bottom:4px}.tr-branches{gap:12px}
+  .tn .sub em:nth-child(n+4){display:none}
+  /* founders: short by default */
+  .fcard{grid-template-columns:84px 1fr;gap:14px;padding:16px}.fcard img{width:84px;height:84px;border-radius:14px}
+  .fcard p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.fcard.more p{display:block;-webkit-line-clamp:unset}
+  .fcard .readmore{appearance:none;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink);background:none;border:0;padding:6px 0 0;cursor:pointer}
+  /* faq: tighter */
+  .faq summary{font-size:14.5px;padding:13px 0}.faq p{font-size:14px}
+  /* cta box */
+  .cta-box{padding:24px 20px}
+}
+@media(min-width:861px) and (max-width:1100px){
+  .vgrid{grid-template-columns:repeat(2,1fr)}.tgrid{columns:2}.pipe-steps{grid-template-columns:repeat(3,1fr)}.founders{grid-template-columns:1fr}
+}

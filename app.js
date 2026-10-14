@@ -636,4 +636,12 @@
   { const row = $('#nowRow'); if (row && D.nowBoard) row.innerHTML = D.nowBoard.map(([sl, n, t, ini]) => `<span class="nb"><img src="assets/clients/${sl}.jpg" alt="" loading="lazy" data-ini="${ini}" onerror="PMimgFail(this)"><span><b>${esc(n)}</b><span>${esc(t)}</span></span></span>`).join(''); }
   /* faq + schema */
   { const f = $('#faqList'); if (f && D.faq) { f.innerHTML = D.faq.map(([q, a], i) => `<details ${i === 0 ? 'open' : ''}><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join(''); const ld = $('#faqLd'); if (ld) ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: D.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }); } }
+
+  /* phone: one tree branch open at a time, short founder cards */
+  (() => {
+    const mob = () => innerWidth <= 860;
+    const tree = $('#tree'); if (tree) { const br = $$('.tr-branch', tree); if (br.length) { br[0].classList.add('open'); }
+      tree.addEventListener('click', e => { if (!mob()) return; const hd = e.target.closest('.tr-head'); if (!hd || e.target.closest('a')) return; const b = hd.closest('.tr-branch'); const open = b.classList.contains('open'); br.forEach(x => x.classList.remove('open')); if (!open) { b.classList.add('open'); setTimeout(() => hd.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); } }); }
+    $$('.fcard').forEach(c => { const p = c.querySelector('p'); if (!p) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'readmore only-m'; b.textContent = 'Read more'; p.after(b); b.addEventListener('click', () => { const m = c.classList.toggle('more'); b.textContent = m ? 'Show less' : 'Read more'; }); });
+  })();
 })();
