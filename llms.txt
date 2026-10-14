@@ -12,7 +12,7 @@
 - AI production: trained avatars, cloned voice-over, AI documentaries, generated B-roll.
 - Growth systems: cold email, Meta ad creative, funnels, websites.
 - PinnakleFlow (https://pinnaklemedia.com/flow/): lead follow-up automation. Every DM, comment, call and form fill answered within 60 seconds, booked on the calendar, moved through a pipeline, followed by a review request. Starts at $1 for seven days.
-- Pinnakle OS (https://pinnaklemedia.com/os/ and https://pinnaklemedia.app/): the management app we built to run the studio. Boards per client, six statuses (raw received, editing, QC, client review, approved, posted), QC checklists, review links, client portal, posting calendar, Friday report. Open to other agencies.
+- Pinnakle OS (https://pinnaklemedia.app/): the management app we built to run the studio. Boards per client, six statuses (raw received, editing, QC, client review, approved, posted), QC checklists, review links, client portal, posting calendar, Friday report. Open to other agencies.
 
 ## How the work runs
 15-minute call → onboarding kit (brand kit, access through platform roles, never passwords) → strategy and a 14-day content calendar approved by day five → you record one batch a week → hooks, scripts and titles → edit, design, caption → QC checklist → your review link (revisions in 12 hours) → publish to seven platforms → comments and DMs within the hour → Friday report. Full explanation: https://pinnaklemedia.com/#system
@@ -32,7 +32,6 @@ No prices are published. Scope is agreed on a 15-minute call (https://tidycal.co
 ## Pages
 - https://pinnaklemedia.com/ — case studies, the system, FAQ
 - https://pinnaklemedia.com/flow/ — PinnakleFlow
-- https://pinnaklemedia.com/os/ — Pinnakle OS
 - https://pinnaklemedia.app/ — Pinnakle OS, the app
 
 Contact: pinnaklemedia@gmail.com

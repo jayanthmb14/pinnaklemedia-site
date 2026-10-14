@@ -591,28 +591,33 @@
   }
   const y = $('[data-year]'); if (y) y.textContent = new Date().getFullYear();
 
-  /* ---------------- the system board (Oct 2026) ---------------- */
+  /* ---------------- the tree: studio · flow · os (Oct 2026) ---------------- */
   (() => {
-    const board = $('#sysBoard'), det = $('#sysDetail'); if (!board || !D.system) return;
-    const N = D.system, cols = () => innerWidth > 1100 ? 7 : innerWidth > 700 ? 4 : 1;
-    board.insertAdjacentHTML('beforeend', N.map((s, i) => `<button type="button" class="sn ${s.link ? 'link' : ''}" data-i="${i}" data-lane="${s.lane}"><span class="snum">${String(i + 1).padStart(2, '0')} · ${s.lane === 'you' ? 'you' : s.lane}</span><b>${esc(s.n)}</b><span>${esc(s.when)}</span></button>`).join(''));
-    const nodes = $$('.sn', board); let cur = -1;
-    const place = () => { const c = cols(); if (c === 1) { nodes.forEach(n => { n.style.gridColumn = ''; n.style.gridRow = ''; }); return; } nodes.forEach((n, i) => { const row = Math.floor(i / c), pos = i % c; n.style.gridRow = row + 1; n.style.gridColumn = (row % 2 === 0 ? pos + 1 : c - pos); }); };
-    const show = i => { if (i === cur) return; cur = i; const s = N[i]; nodes.forEach((n, k) => n.classList.toggle('pick', k === i));
-      det.innerHTML = `<div><div class="eyebrow" style="margin-bottom:4px">Step ${String(i + 1).padStart(2, '0')} of ${N.length} · ${s.lane === 'you' ? 'yours' : s.lane}</div><h3 class="sd-h">${esc(s.n)}</h3><div class="sd-meta"><div><small>Who</small>${esc(s.who)}</div><div><small>When</small>${esc(s.when)}</div><div><small>Tool</small>${esc(s.tool)}</div></div><div class="sd-nav"><button type="button" data-go="${i - 1}" ${i === 0 ? 'disabled' : ''}>← Previous</button><button type="button" data-go="${i + 1}" ${i === N.length - 1 ? 'disabled' : ''}>Next step →</button></div></div><div class="sd-body"><p><b>What happens</b>${esc(s.what)}</p><p><b>What you get</b>${esc(s.get)}</p><p><b>Why it is there</b>${esc(s.why)}</p>${s.link ? `<a class="btn btn-primary" href="${s.link}"><span class="dot"></span>Open ${esc(s.n.replace(/^.*: /, ''))} <span class="arrow">→</span></a>` : ''}</div>`;
-      if (cols() === 1) nodes[i].after(det); else board.after(det); };
-    board.addEventListener('click', e => { const n = e.target.closest('.sn'); if (n) { show(+n.dataset.i); userPick = true; } });
-    det.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { show(+b.dataset.go); userPick = true; } });
-    let userPick = false; place(); show(0);
-    const tok = $('#sysToken'), base = $('#sysBase'), fill = $('#sysFill');
-    const draw = () => { if (cols() === 1) return null; const b = board.getBoundingClientRect(); const pts = nodes.map(n => { const r = n.getBoundingClientRect(); return [r.left - b.left + r.width / 2, r.top - b.top + r.height / 2]; });
-      let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; if (Math.abs(y1 - y0) < 2) d += ` L${x1},${y1}`; else { const mx = x0 + (x1 - x0) * .5; d += ` C${x0},${y0 + (y1 - y0) * .6} ${x1},${y0 + (y1 - y0) * .4} ${x1},${y1}`; } }
-      base.setAttribute('d', d); fill.setAttribute('d', d); const L = fill.getTotalLength(); fill.style.strokeDasharray = L; fill.style.strokeDashoffset = L; return { L, pts }; };
-    let geo = draw();
-    const setP = p => { if (!geo) return; const len = geo.L * p; const pt = fill.getPointAtLength(len); tok.style.transform = `translate(${pt.x}px,${pt.y}px)`; fill.style.strokeDashoffset = geo.L - len; const k = Math.min(N.length - 1, Math.round(p * (N.length - 1))); nodes.forEach((n, i) => n.classList.toggle('lit', i <= k)); if (!userPick) show(k); };
-    if (G && ST && !reduce) { ST.create({ trigger: board, start: 'top 75%', end: 'bottom 35%', scrub: .5, onUpdate: st => setP(st.progress), invalidateOnRefresh: true }); } else setP(1);
-    addEventListener('resize', () => { place(); geo = draw(); if (ST) ST.refresh(); });
-    addEventListener('load', () => { place(); geo = draw(); setP(0); if (ST) { setTimeout(() => { geo = draw(); ST.refresh(); }, 900); setTimeout(() => { geo = draw(); ST.refresh(); }, 2600); } });
+    const T = D.tree, tree = $('#tree'), rootEl = $('#trRoot'), brEl = $('#trBranches'), svg = $('#trLinks'), det = $('#trDetail'); if (!T || !tree) return;
+    const mobile = () => innerWidth <= 1000;
+    rootEl.innerHTML = `<svg viewBox="0 0 24 24"><use href="#pm-mark"/></svg><div><b>${esc(T.root.n)}</b><span>${esc(T.root.t)}</span></div>`;
+    brEl.innerHTML = T.branches.map(b => `<div class="tr-branch" data-k="${b.k}" style="--c:${b.c}"><div class="tr-head"><span class="sw"></span><div><b>${esc(b.n)}</b><span>${esc(b.t)}</span></div><a href="${b.href}" ${b.ext ? 'target="_blank" rel="noopener"' : ''}>${b.ext ? 'Open ↗' : 'Open →'}</a></div><ol class="tr-spine">${b.nodes.map((n, i) => `<li><button type="button" class="tn" data-id="${b.k}.${n.k}"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(n.n)}</b><span>${esc(n.when)}</span><span class="lk">${(n.links || []).map(l => `<i>${esc(byId(l).b.n)}</i>`).join('')}</span></button></li>`).join('')}</ol></div>`).join('');
+    function byId(id) { const [bk, nk] = id.split('.'); const b = T.branches.find(x => x.k === bk); return { b, n: b.nodes.find(x => x.k === nk) }; }
+    const nodeEl = id => $(`.tn[data-id="${id}"]`, tree);
+    const allLinks = []; T.branches.forEach(b => b.nodes.forEach(n => (n.links || []).forEach(l => { const key = [b.k + '.' + n.k, l].sort().join('|'); if (!allLinks.find(x => x.key === key)) allLinks.push({ key, a: b.k + '.' + n.k, b: l }); })));
+    const P = el => { const r = el.getBoundingClientRect(), t = tree.getBoundingClientRect(); return { l: r.left - t.left, r: r.right - t.left, t: r.top - t.top, b: r.bottom - t.top, cx: r.left - t.left + r.width / 2, cy: r.top - t.top + r.height / 2 }; };
+    const draw = () => { if (mobile()) { svg.innerHTML = svg.innerHTML.replace(/<path[\s\S]*$/, ''); return; } let s = ''; const rp = P(rootEl); $$('.tr-head', tree).forEach(hd => { const p = P(hd); const ym = (rp.b + p.t) / 2; s += `<path class="trunk" d="M${rp.cx},${rp.b} C${rp.cx},${ym} ${p.cx},${ym} ${p.cx},${p.t}"/>`; });
+      allLinks.forEach(L => { const A = nodeEl(L.a), B = nodeEl(L.b); if (!A || !B) return; const a = P(A), b = P(B); const left = a.cx < b.cx ? a : b, right = a.cx < b.cx ? b : a; const dx = (right.l - left.r) * .5; s += `<path class="xl" data-key="${L.key}" d="M${left.r},${left.cy} C${left.r + dx},${left.cy} ${right.l - dx},${right.cy} ${right.l},${right.cy}"/>`; });
+      svg.innerHTML = svg.innerHTML.replace(/<path[\s\S]*$/, '') + s; };
+    const focus = id => { tree.classList.toggle('focus', !!id); $$('.tn', tree).forEach(n => n.classList.remove('rel')); $$('.xl', svg).forEach(p => p.classList.remove('on')); if (!id) return; const { n } = byId(id); const rel = new Set(n.links || []); allLinks.forEach(L => { if (L.a === id) rel.add(L.b); if (L.b === id) rel.add(L.a); }); rel.forEach(r => { const e = nodeEl(r); if (e) e.classList.add('rel'); const key = [id, r].sort().join('|'); const p = $(`.xl[data-key="${key}"]`, svg); if (p) p.classList.add('on'); }); };
+    let cur = null;
+    const show = id => { cur = id; const { b, n } = byId(id); $$('.tn', tree).forEach(e => e.classList.toggle('on', e.dataset.id === id)); det.style.setProperty('--c', b.c);
+      det.innerHTML = `<div><div class="eyebrow" style="margin-bottom:4px;color:${b.c}">${esc(b.n)} · step ${String(b.nodes.indexOf(n) + 1).padStart(2, '0')} of ${b.nodes.length}</div><h3 class="td-h">${esc(n.n)}</h3><div class="td-meta"><div><small>Who</small>${esc(n.who)}</div><div><small>When</small>${esc(n.when)}</div><div><small>Tool</small>${esc(n.tool)}</div></div>${(n.links || []).length ? `<div class="td-links"><span>Connected to</span>${n.links.map(l => { const x = byId(l); return `<button type="button" data-go="${l}" style="--c2:${x.b.c}"><i></i>${esc(x.b.n)} · ${esc(x.n.n)}</button>`; }).join('')}</div>` : ''}</div><div class="td-body"><p><b>What happens</b>${esc(n.what)}</p><p><b>What you get</b>${esc(n.get)}</p><p><b>Why it is there</b>${esc(n.why)}</p><a class="btn btn-ghost td-cta" href="${b.href}" ${b.ext ? 'target="_blank" rel="noopener"' : ''}>${b.ext ? 'Open ' + esc(b.n) + ' ↗' : 'See ' + esc(b.n) + ' →'}</a></div>`;
+      if (mobile()) nodeEl(id).closest('li').after(det); else tree.after(det); focus(id); };
+    tree.addEventListener('click', e => { const n = e.target.closest('.tn'); if (n) show(n.dataset.id); });
+    tree.addEventListener('mouseover', e => { const n = e.target.closest('.tn'); if (n && !mobile()) focus(n.dataset.id); });
+    tree.addEventListener('mouseleave', () => focus(cur));
+    det.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { show(g.dataset.go); if (mobile()) nodeEl(g.dataset.go).scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
+    show('studio.record');
+    draw(); addEventListener('load', () => { draw(); setTimeout(draw, 900); }); addEventListener('resize', () => { draw(); if (cur) focus(cur); });
+    $$('.tn', tree).forEach((n, i) => n.style.setProperty('--i', i % 9));
+    const live = () => { tree.classList.add('live'); draw(); if (G && !reduce) $$('.trunk', svg).forEach(p => { const L = p.getTotalLength(); G.fromTo(p, { strokeDasharray: L, strokeDashoffset: L }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', delay: .15 }); }); };
+    if (reduce || !('IntersectionObserver' in window)) live(); else { const io = new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); live(); }, { threshold: .12 }); io.observe(tree); }
   })();
   /* on the board this month */
   { const row = $('#nowRow'); if (row && D.nowBoard) row.innerHTML = D.nowBoard.map(([sl, n, t, ini]) => `<span class="nb"><img src="assets/clients/${sl}.jpg" alt="" loading="lazy" data-ini="${ini}" onerror="PMimgFail(this)"><span><b>${esc(n)}</b><span>${esc(t)}</span></span></span>`).join(''); }
