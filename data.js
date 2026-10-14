@@ -112,7 +112,7 @@ window.PM = (() => {
     { slug:'yoshi', theme:'', tag:'Jan 2025 – today', big:'365K', unit:'impressions / 28 d', title:'106+ ghostwritten LinkedIn posts, ~31K followers, and a published author.',
       desc:'LinkedIn ghostwriting plus AI-avatar Shorts (HeyGen + ElevenLabs). Impressions rose from 286K to 365K a month; per-post impressions +46% over 90 days. By June 2025 Yoshi had “my first two clients”, a 150-attendee masterclass and a city leadership programme. Video testimonial on file.',
       chips:[['~31K followers','up'],['AI avatar Shorts','']], spark:[20,22,24,26,28,29,31,33,35,36], testimonial:'805KmIDmzNo', video:'mwu9XolFloM',
-      did:['LinkedIn ghostwriting (Zaid), 30+ posts a month','HeyGen + ElevenLabs avatar Shorts','Thumbnails, website, Linktree, email automation','2026: OPX AI channel and personal restart'] },
+      did:['LinkedIn ghostwriting, 30+ posts a month','HeyGen + ElevenLabs avatar Shorts','Thumbnails, website, Linktree, email automation','2026: OPX AI channel and personal restart'] },
     { slug:'foyr', theme:'cream', tag:'Nov 2024 – today', big:'5 → 17', unit:'videos / month', title:'An enterprise marketing team that tripled its order with us.',
       desc:'Started at five or six videos a month. By April 2026 the Foyr team was commissioning 12 to 17: reels, long-form tutorials, testimonial films, AI street-interview ads, newsletters and carousels. 200+ deliverables logged.',
       chips:[['200+ deliverables','up'],['Design + video + AI','']], spark:[5,6,6,8,9,11,12,14,15,17],
