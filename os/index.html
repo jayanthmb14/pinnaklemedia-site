@@ -97,7 +97,7 @@ body{background:var(--bg)}
         <div class="main">
           <div class="top"><b>Work board · all clients</b><span class="pill">38 cards · 6 due today</span></div>
           <div class="kan" id="kan"></div>
-          <div class="oslog"><div><i></i><b>Darshan</b> moved “Ep 12 clips” to QC · passed 4 of 4 checks</div><div><i></i><b>Client</b> approved “Launch reel” from the review link</div><div><i></i><b>Shreedhi</b> scheduled 3 posts for Thursday 6:30 pm</div></div>
+          <div class="oslog"><div><i></i><b>QC</b> passed “Ep 12 clips” · 4 of 4 checks</div><div><i></i><b>Client</b> approved “Launch reel” from the review link</div><div><i></i><b>Calendar</b> scheduled 3 posts for Thursday 6:30 pm</div></div>
         </div>
       </div>
     </div>
@@ -242,7 +242,7 @@ body{background:var(--bg)}
   const cols = ['Raw received', 'Editing', 'QC', 'Your review', 'Approved', 'Posted'];
   const cards = [['Launch reel', 'Bloom Café', '#F6951B', 3], ['Ep 12 clips', 'Orbit Podcast', '#7E66D6', 2], ['Coach intro', 'Summit Fitness', '#0F8A5F', 1], ['Tax tips', 'Kite Finance', '#3B7FD4', 0], ['Smile story', 'Brightside Dental', '#E5484D', 4], ['Site tour', 'Juniper Homes', '#1F8199', 5], ['Menu carousel', 'Bloom Café', '#F6951B', 1], ['Ep 13 hook', 'Orbit Podcast', '#7E66D6', 0]];
   const kan = $('#kan'); kan.innerHTML = cols.map((c, i) => `<div class="col" data-i="${i}"><h5>${c}<span>${cards.filter(k => k[3] === i).length}</span></h5></div>`).join('');
-  const colEls = $$('.col', kan); cards.forEach(([t, c, h, s], i) => colEls[s].insertAdjacentHTML('beforeend', `<div class="kc" data-i="${i}" style="--kc:${h}"><b>${t}</b><span>${c}</span><em>${['raw in', 'Navin', 'Darshan · 3/4', 'client', 'Drive', 'Thu 6:30 pm'][s]}</em></div>`));
+  const colEls = $$('.col', kan); cards.forEach(([t, c, h, s], i) => colEls[s].insertAdjacentHTML('beforeend', `<div class="kc" data-i="${i}" style="--kc:${h}"><b>${t}</b><span>${c}</span><em>${['raw in', 'editing', 'QC · 3/4', 'client', 'Drive', 'Thu 6:30 pm'][s]}</em></div>`));
   const recount = () => colEls.forEach(c => { c.querySelector('h5 span').textContent = c.querySelectorAll('.kc').length; });
   let k = 0; setInterval(() => { if (document.hidden) return; const list = $$('.kc', kan).filter(c => +c.closest('.col').dataset.i < 5); if (!list.length) return; const card = list[k % list.length]; k++; const to = colEls[+card.closest('.col').dataset.i + 1]; const a = card.getBoundingClientRect(); to.appendChild(card); const b = card.getBoundingClientRect(); card.classList.add('moving'); card.style.transition = 'none'; card.style.transform = `translate(${a.left - b.left}px,${a.top - b.top}px)`; requestAnimationFrame(() => { card.style.transition = ''; card.style.transform = ''; setTimeout(() => card.classList.remove('moving'), 700); }); recount(); if ($$('.kc', colEls[5]).length > 3) { const back = $('.kc', colEls[5]); colEls[0].appendChild(back); recount(); } }, 2600);
 })();
