@@ -652,5 +652,7 @@
     $$('.fcard').forEach(c => { const p = c.querySelector('p'); if (!p) return; const b = document.createElement('button'); b.type = 'button'; b.className = 'readmore only-m'; b.textContent = 'Read more'; p.after(b); b.addEventListener('click', () => { const m = c.classList.toggle('more'); b.textContent = m ? 'Show less' : 'Read more'; }); });
   })();
   /* pins are measured before lazy images and fonts settle: re-measure once they have */
+  /* smooth scroll-behavior makes ScrollTrigger's refresh measure at the wrong scroll position (Brave/Chrome); switch it off while measuring */
+  if (ST) { ST.config({ ignoreMobileResize: true }); ST.addEventListener('refreshInit', () => { document.documentElement.style.scrollBehavior = 'auto'; }); ST.addEventListener('refresh', () => { document.documentElement.style.scrollBehavior = ''; }); }
   if (ST) { const rf = () => ST.refresh(); addEventListener('load', () => { setTimeout(rf, 800); setTimeout(rf, 2500); setTimeout(rf, 5000); }); if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(rf, 100)); }
 })();
