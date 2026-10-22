@@ -304,19 +304,19 @@
     const k = D.cases.find(x => x.slug === slug); if (!k) return;
     const quotes = D.quotes.filter(q => q.c === slug).slice(0, 3);
     openModal(`${clientHead(slug)}<div class="mbody"><div class="case-big"><span>${esc(k.big)}</span><span class="u">${esc(k.unit)}</span></div><div class="case-title">${esc(k.title)}</div><p style="color:var(--ink-2);font-size:15px;margin-top:8px">${esc(k.desc)}</p>
+      ${onCamera(slug)}
+      ${k.testimonial && !(D.videoTestimonials || []).some(v => v.client === slug) ? `<h5>On camera</h5>${videoHtml(k.testimonial === 'bkbq' ? 'mp4:assets/video/bkbq-testimonial.mp4' : 'yt:' + k.testimonial, k.testimonial === 'bkbq' || k.testimonial === '805KmIDmzNo' || k.testimonial === 'EfHn0koliq0' ? 'portrait' : 'landscape')}` : k.video ? `<h5>Sample</h5>${videoHtml('yt:' + k.video, 'portrait')}` : ''}
+      ${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}
       <h5>What we did</h5><ul>${(k.did || []).map(d => `<li>${esc(d)}</li>`).join('')}</ul>
       <h5>Results</h5><div class="chips">${k.chips.map(([t, kind]) => `<span class="chip ${kind}">${esc(t)}</span>`).join('')}</div>
       ${k.proof ? `<h5>Proof</h5><img src="${k.proof}" alt="Analytics screenshot" style="border-radius:12px;box-shadow:var(--sh)">${k.proof2 ? `<img src="${k.proof2}" alt="Video analytics" style="border-radius:12px;box-shadow:var(--sh);margin-top:10px">` : ''}` : ''}
-      ${onCamera(slug)}
       ${receiptsFor(slug)}
-      ${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}
-      ${k.testimonial ? `<h5>Video testimonial</h5>${videoHtml(k.testimonial === 'bkbq' ? 'mp4:assets/video/bkbq-testimonial.mp4' : 'yt:' + k.testimonial, k.testimonial === 'bkbq' || k.testimonial === '805KmIDmzNo' || k.testimonial === 'EfHn0koliq0' ? 'portrait' : 'landscape')}` : k.video ? `<h5>Sample</h5>${videoHtml('yt:' + k.video, 'portrait')}` : ''}
       ${k.link ? `<div class="mlinks"><a class="btn btn-ghost" href="${k.link}" target="_blank" rel="noopener">Watch the 44K-view Reel ↗</a></div>` : ''}${clientLinks(slug)}</div>`);
   };
   const openClient = slug => {
     const k = D.cases.find(x => x.slug === slug); if (k) return openCase(slug);
     const c = client(slug); const quotes = D.quotes.filter(q => q.c === slug); const win = D.wins.filter(w => w[1] === slug);
-    openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${win.length ? `<h5>The work</h5><ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${onCamera(slug)}${receiptsFor(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${clientLinks(slug)}</div>`);
+    openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${onCamera(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${c && c.work ? `<h5>The work</h5><p style="color:var(--ink-2);font-size:15px">${esc(c.work)}</p>` : ''}${win.length ? `${c && c.work ? '' : '<h5>The work</h5>'}<ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${receiptsFor(slug)}${clientLinks(slug)}</div>`);
   };
   const openVideo = (v, orient, slug) => openModal(`${slug ? clientHead(slug) : ''}<div class="mbody">${videoHtml(v, orient)}</div>`);
   const openYear = i => {
