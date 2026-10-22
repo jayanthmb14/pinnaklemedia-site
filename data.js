@@ -173,6 +173,7 @@ window.PM = (() => {
     { yt:'vqWtlqUQ9bc', client:'elijah-eagle', orient:'landscape', title:'Elijah Eagle, Hour of His Glory', meta:'15 Shorts a week + long-form · recorded Nov 2025' },
     { yt:'cmra3jv0onM', client:'thrivewell', orient:'portrait', title:'L. Michael Burt, The ThriveWell Journey', meta:'15K → 20K subscribers · recorded Jan 2026' },
     { yt:'ajTPqdk87Ok', client:'dudley', orient:'portrait', title:'Dudley J. Edouard, unprompted', meta:'A WhatsApp thank-you after 0 → 12K · 2025' },
+    { mp4:'assets/video/veronica-testimonial.mp4', poster:'assets/video/veronica-poster.jpg', client:'veronica-monet', orient:'landscape', title:'Veronica Monet, The Shame Free Zone', meta:'Community posts, reels and long-form · recorded Oct 2026' },
   ];
 
   /* Written quotes. src: where it came from; date shown as month + year only. */
