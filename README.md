@@ -8,7 +8,7 @@ Live: **https://pinnaklemedia.com**
 
 ## About Pinnakle Media
 
-Pinnakle Media (a brand of PKJMB Media Pvt Ltd, incorporated 22 December 2023) started in October 2022 as *Cut To Pro*, a one-person editing service, and was co-founded on 6 December 2022 by **Jayanth M B** (Founder & CEO) and **Prateek Kumar Tiwari** (Co-founder & MD). Today it is a ten-person team that runs content for creators and brands in the US, UK, Canada, Australia and India.
+Pinnakle Media (a brand of PKJMB Media Pvt Ltd, incorporated 22 December 2023) started in October 2022 as *Cut To Pro*, a one-person editing service, and was co-founded on 6 December 2022 by **Jayanth M B** (Founder & CEO) and **Prateek Kumar Tiwari** (Co-founder & MD). Today it is a ten-person team that runs content for creators and brands in the US, Canada, the UK and India.
 
 What the studio does:
 
@@ -59,9 +59,26 @@ python3 -m http.server 8766
 
 Then open http://localhost:8766/.
 
+## Prerender (crawlable HTML)
+
+The case cards, results board, testimonials, services, founders, FAQ and the two client marquees are drawn by `app.js` from `data.js`. So that Google, AI crawlers and `curl` see the real text, `scripts/prerender.mjs` writes a static copy of those sections into `index.html` between `<!-- ssr:NAME -->` / `<!-- /ssr:NAME -->` markers, and fills the FAQPage JSON-LD in `<script id="faqLd">` with the exact FAQ text. Each static node carries `data-ssr`; `app.js` removes those on start-up and renders the interactive version as before. Counters ship their final figure in the HTML (`<span data-count="3000">3,000+</span>`) and only reset to 0 when the GSAP count-up is about to run.
+
+**Re-run after every `data.js` change** (Node 18+, no dependencies):
+
+```bash
+node scripts/prerender.mjs
+```
+
+Check: `curl -s localhost:8766/ | grep -c "<details"` should print the FAQ count.
+
+## Service pages
+
+- `/youtube-video-editing/` and `/personal-branding-agency/`: static HTML (no app.js), sharing `styles.css` plus `pages.css`. Each has its own title, meta description, canonical, OG/Twitter, and Service, FAQPage, BreadcrumbList and WebPage JSON-LD (provider `https://pinnaklemedia.com/#organization`). Keep the visible FAQ text and the FAQPage JSON-LD identical when editing.
+- New pages go in `sitemap.xml` and `llms.txt`, the nav "Services" menu and the footer.
+
 ## Deploy
 
-Pushes to `main` deploy automatically to Hostinger (Git deploy to `public_html`). The host caches CSS and JS for seven days, so bump the `?v=` query string on `styles.css`, `data.js` and `app.js` in `index.html` with every release.
+Pushes to `main` deploy automatically to Hostinger (Git deploy to `public_html`). The host caches CSS and JS for seven days, so bump the `?v=` query string on `styles.css`, `pages.css`, `data.js` and `app.js` in every HTML page that loads them with every release.
 
 ## Adding content
 

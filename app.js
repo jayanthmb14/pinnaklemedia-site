@@ -10,6 +10,7 @@
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  if (D) $$('[data-ssr]').forEach(n => n.remove()); /* static copies from scripts/prerender.mjs */
   const G = window.gsap; const ST = window.ScrollTrigger; const MP = window.MotionPathPlugin;
   if (G && ST) { G.registerPlugin(ST); if (MP) G.registerPlugin(MP); }
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -20,7 +21,7 @@
     const c = client(slug);
     if (!c) return `<span class="ini ${cls}">PM</span>`;
     if (!c.photo) return `<span class="ini ${cls}">${initials(c.name)}</span>`;
-    return `<img class="${cls}" src="${c.photo}" alt="${esc(c.short)}" loading="lazy" data-ini="${initials(c.name)}" onerror="PMimgFail(this)">`;
+    return `<img class="${cls}" src="${c.photo}" alt="${esc(c.short)} profile picture" loading="lazy" data-ini="${initials(c.name)}" onerror="PMimgFail(this)">`;
   };
   window.PMimgFail = img => { const s = document.createElement('span'); s.className = img.className + ' ini'; s.textContent = img.dataset.ini || 'PM'; img.replaceWith(s); };
   const curve = (arr, w, h, x0 = 0, pad = 4) => {
@@ -80,7 +81,7 @@
   /* ---------------- render: brands row + receipts ---------------- */
   const brands = $('#brands');
   if (brands) { const items = (D.brands || []).map(([s, line]) => { const c = client(s); return c ? `<div class="bchip" data-client="${s}">${avatar(s)}<div><b>${esc(c.short)}</b><span>${esc(line)}</span></div></div>` : ''; }).join(''); brands.innerHTML = items + items; }
-  const receiptsFor = slug => { const rs = (D.receipts || []).filter(r => r.c === slug); return rs.length ? `<h5>Receipts</h5><div class="rgal">${rs.map(r => `<figure><img src="${r.img}" alt="${esc(r.title)}" loading="lazy"><figcaption><span class="rs">${esc(r.src)}</span>${esc(r.title)} · ${esc(r.text)}</figcaption></figure>`).join('')}</div>` : ''; };
+  const receiptsFor = slug => { const rs = (D.receipts || []).filter(r => r.c === slug); return rs.length ? `<h5>Receipts</h5><div class="rgal">${rs.map(r => `<figure><img src="${r.img}" alt="${esc(r.src)} screenshot: ${esc(r.title)}" loading="lazy"><figcaption><span class="rs">${esc(r.src)}</span>${esc(r.title)} · ${esc(r.text)}</figcaption></figure>`).join('')}</div>` : ''; };
   const hasReceipt = slug => (D.receipts || []).some(r => r.c === slug);
 
   /* ---------------- render: hero avatars (rotating stack) ---------------- */
@@ -156,7 +157,7 @@
   const cablePath = 'M100,420 C220,420 230,360 340,360 S490,290 600,290 S750,210 860,210 S990,140 1100,140';
   const svgA = $('#ascentSvg'), stage = $('#ascentStage');
   const statsHtml = t => `<div class="ystats">${(t.stats || []).map(([v, l]) => `<div><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('')}</div>`;
-  const facesHtml = (t, n = 6) => t.clients.slice(0, n).map(s => { const c = client(s); return c ? `<img src="${c.photo}" alt="${esc(c.short)}" title="${esc(c.short)}" loading="lazy" data-ini="${initials(c.name)}" onerror="PMimgFail(this)">` : ''; }).join('') + (t.clients.length > n ? `<span class="more">+${t.clients.length - n} more</span>` : '');
+  const facesHtml = (t, n = 6) => t.clients.slice(0, n).map(s => { const c = client(s); return c ? `<img src="${c.photo}" alt="${esc(c.short)} profile picture" title="${esc(c.short)}" loading="lazy" data-ini="${initials(c.name)}" onerror="PMimgFail(this)">` : ''; }).join('') + (t.clients.length > n ? `<span class="more">+${t.clients.length - n} more</span>` : '');
   if (svgA && stage) {
     const stations = D.timeline.map((t, i) => `<g class="station" data-i="${i}" transform="translate(${ST_X[i]},${ST_Y[i]})">${pylon(i, GROUND - ST_Y[i])}<circle class="node" r="9"/><text y="62" text-anchor="middle">${t.year}</text><text class="sub" y="84" text-anchor="middle">${esc(t.label)}</text></g>`).join('');
     svgA.innerHTML = `<path class="cable" d="${cablePath}"/><path class="cable-done" id="cableDone" d="${cablePath}"/>${stations}
@@ -256,13 +257,13 @@
   const thumbs = $('#thumbs');
   if (thumbs) thumbs.innerHTML = D.samples.thumbs.map(([src, cap], i) => `<figure class="rv" data-d="${i % 3}"><img src="${src}" alt="${esc(cap)} thumbnail" loading="lazy"><figcaption>${esc(cap)}</figcaption></figure>`).join('');
   const covers = $('#covers');
-  if (covers) covers.innerHTML = D.samples.covers.map((src, i) => `<img class="rv" data-d="${i % 4}" src="${src}" alt="Pinnakle Media reel cover" loading="lazy">`).join('');
+  if (covers) covers.innerHTML = D.samples.covers.map((src, i) => `<img class="rv" data-d="${i % 4}" src="${src}" alt="Pinnakle Media Instagram reel cover design" loading="lazy">`).join('');
   const beyond = $('#beyond');
   if (beyond) beyond.innerHTML = D.beyond.map((b, i) => `<div class="bcard rv" data-d="${i % 3}"><div class="media">${b.video ? `<video src="${b.video}" poster="${b.poster}" muted playsinline loop preload="none" data-hoverplay></video>` : `<img src="${b.img}" alt="${esc(b.title)}" loading="lazy">`}</div><div class="body"><span class="tag">${esc(b.tag)}</span><h4>${esc(b.title)}</h4><p>${esc(b.text)}</p>${b.link ? `<a class="more" href="${b.link}" target="_blank" rel="noopener">Visit ↗</a>` : ''}</div></div>`).join('');
 
   /* ---------------- render: team ---------------- */
   const founders = $('#founders');
-  if (founders) founders.innerHTML = D.team.founders.map((f, i) => `<div class="fcard rv"><span class="fnum">${i === 0 ? 'Founder · since Dec 2022' : 'Co-founder · since Dec 2022'}</span><img src="${f.photo}" alt="${esc(f.name)}" data-ini="${initials(f.name)}" onerror="PMimgFail(this)"><div><h4>${esc(f.name)}</h4><div class="role">${esc(f.role)}</div><p>${esc(f.text)}</p><div class="fx">${(f.chips || []).map(c => `<span>${esc(c)}</span>`).join('')}</div>${f.li ? `<a class="li" href="${f.li}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}</div></div>`).join('');
+  if (founders) founders.innerHTML = D.team.founders.map((f, i) => `<div class="fcard rv"><span class="fnum">${i === 0 ? 'Founder · since Dec 2022' : 'Co-founder · since Dec 2022'}</span><img src="${f.photo}" alt="${esc(f.name)}, ${esc(f.role.split(' · ')[0])} of Pinnakle Media" data-ini="${initials(f.name)}" onerror="PMimgFail(this)"><div><h4>${esc(f.name)}</h4><div class="role">${esc(f.role)}</div><p>${esc(f.text)}</p><div class="fx">${(f.chips || []).map(c => `<span>${esc(c)}</span>`).join('')}</div>${f.li ? `<a class="li" href="${f.li}" target="_blank" rel="noopener">LinkedIn ↗</a>` : ''}</div></div>`).join('');
 
   const svc = $('#svc');
   if (svc && D.services) {
@@ -301,7 +302,7 @@
     openModal(`${clientHead(slug)}<div class="mbody"><div class="case-big"><span>${esc(k.big)}</span><span class="u">${esc(k.unit)}</span></div><div class="case-title">${esc(k.title)}</div><p style="color:var(--ink-2);font-size:15px;margin-top:8px">${esc(k.desc)}</p>
       <h5>What we did</h5><ul>${(k.did || []).map(d => `<li>${esc(d)}</li>`).join('')}</ul>
       <h5>Results</h5><div class="chips">${k.chips.map(([t, kind]) => `<span class="chip ${kind}">${esc(t)}</span>`).join('')}</div>
-      ${k.proof ? `<h5>Proof</h5><img src="${k.proof}" alt="Analytics screenshot" style="border-radius:12px;box-shadow:var(--sh)">${k.proof2 ? `<img src="${k.proof2}" alt="Video analytics" style="border-radius:12px;box-shadow:var(--sh);margin-top:10px">` : ''}` : ''}
+      ${k.proof ? `<h5>Proof</h5><img src="${k.proof}" alt="YouTube Studio analytics for ${esc((client(slug) || {}).short || 'this client')}" style="border-radius:12px;box-shadow:var(--sh)">${k.proof2 ? `<img src="${k.proof2}" alt="Video analytics for ${esc((client(slug) || {}).short || 'this client')}" style="border-radius:12px;box-shadow:var(--sh);margin-top:10px">` : ''}` : ''}
       ${receiptsFor(slug)}
       ${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}
       ${k.testimonial ? `<h5>Video testimonial</h5>${videoHtml(k.testimonial === 'bkbq' ? 'mp4:assets/video/bkbq-testimonial.mp4' : 'yt:' + k.testimonial, k.testimonial === 'bkbq' || k.testimonial === '805KmIDmzNo' || k.testimonial === 'EfHn0koliq0' ? 'portrait' : 'landscape')}` : k.video ? `<h5>Sample</h5>${videoHtml('yt:' + k.video, 'portrait')}` : ''}
@@ -376,6 +377,7 @@
     if (reduce || !G) { el.textContent = pre + fmt(t, dec) + suf; return; }
     const o = { v: 0 }; G.to(o, { v: t, duration: 1.8, ease: 'power3.out', onUpdate: () => { el.textContent = pre + fmt(o.v, dec) + suf; } });
   };
+  if (G && !reduce) $$('.num [data-count], .kpi .k[data-count]').forEach(el => { el.textContent = '0'; });
   const growBars = tile => { const bars = $$('.bars i', tile); if (!G) { bars.forEach(b => b.style.transform = 'scaleY(1)'); return; } bars.forEach((b, i) => G.fromTo(b, { scaleY: .08 }, { scaleY: .35 + i * .16, duration: .9, delay: i * .08, ease: 'power3.out' })); };
   const replayNumbers = () => $$('.num').forEach(t => { $$('[data-count]', t).forEach(countEl); growBars(t); });
   if ('IntersectionObserver' in window) { const cio = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { $$('[data-count]', x.target).forEach(countEl); growBars(x.target); cio.unobserve(x.target); } }), { threshold: .5 }); $$('.num').forEach(t => cio.observe(t)); } else replayNumbers();
@@ -605,7 +607,7 @@
     const T = D.tree, tree = $('#tree'), rootEl = $('#trRoot'), brEl = $('#trBranches'), svg = $('#trLinks'), det = $('#trDetail'); if (!T || !tree) return;
     const mobile = () => innerWidth <= 1000;
     rootEl.innerHTML = `<svg viewBox="0 0 24 24"><use href="#pm-mark"/></svg><div><b>${esc(T.root.n)}</b><span>${esc(T.root.t)}</span></div>`;
-    brEl.innerHTML = T.branches.map(b => `<div class="tr-branch" data-k="${b.k}" style="--c:${b.c}"><div class="tr-head">${b.img ? `<img class="tr-ico" src="${b.img}" alt="" width="44" height="44" loading="lazy">` : `<span class="sw"></span>`}<div><b>${esc(b.n)}</b><span>${esc(b.t)}</span></div><a href="${b.href}" ${b.ext ? 'target="_blank" rel="noopener"' : ''}>${b.ext ? 'Open ↗' : 'Open →'}</a></div><ol class="tr-spine">${b.nodes.map((n, i) => `<li><button type="button" class="tn" data-id="${b.k}.${n.k}"><img class="tico" src="assets/tree/steps/${b.k}-${n.k}.png" alt="" loading="lazy" onerror="this.remove()"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(n.n)}</b><span>${esc(n.when)}</span><span class="sub">${(n.sub || []).slice(0, 4).map(s => `<em>${esc(s)}</em>`).join('')}${(n.sub || []).length > 4 ? `<em>+${n.sub.length - 4}</em>` : ''}</span><span class="lk">${(n.links || []).map(l => `<i>${esc(byId(l).b.n)}</i>`).join('')}</span></button></li>`).join('')}</ol></div>`).join('');
+    brEl.innerHTML = T.branches.map(b => `<div class="tr-branch" data-k="${b.k}" style="--c:${b.c}"><div class="tr-head">${b.img ? `<img class="tr-ico" src="${b.img}" alt="" aria-hidden="true" width="44" height="44" loading="lazy">` : `<span class="sw"></span>`}<div><b>${esc(b.n)}</b><span>${esc(b.t)}</span></div><a href="${b.href}" ${b.ext ? 'target="_blank" rel="noopener"' : ''}>${b.ext ? 'Open ↗' : 'Open →'}</a></div><ol class="tr-spine">${b.nodes.map((n, i) => `<li><button type="button" class="tn" data-id="${b.k}.${n.k}"><img class="tico" src="assets/tree/steps/${b.k}-${n.k}.png" alt="" aria-hidden="true" loading="lazy" onerror="this.remove()"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(n.n)}</b><span>${esc(n.when)}</span><span class="sub">${(n.sub || []).slice(0, 4).map(s => `<em>${esc(s)}</em>`).join('')}${(n.sub || []).length > 4 ? `<em>+${n.sub.length - 4}</em>` : ''}</span><span class="lk">${(n.links || []).map(l => `<i>${esc(byId(l).b.n)}</i>`).join('')}</span></button></li>`).join('')}</ol></div>`).join('');
     function byId(id) { const [bk, nk] = id.split('.'); const b = T.branches.find(x => x.k === bk); return { b, n: b.nodes.find(x => x.k === nk) }; }
     const nodeEl = id => $(`.tn[data-id="${id}"]`, tree);
     const allLinks = []; T.branches.forEach(b => b.nodes.forEach(n => (n.links || []).forEach(l => { const key = [b.k + '.' + n.k, l].sort().join('|'); if (!allLinks.find(x => x.key === key)) allLinks.push({ key, a: b.k + '.' + n.k, b: l }); })));
@@ -617,7 +619,7 @@
     let cur = null, pinned = false, hideT = null;
     const pop = document.createElement('div'); pop.className = 'tr-pop'; document.body.appendChild(pop); const dim = document.createElement('div'); dim.className = 'tr-dim'; document.body.appendChild(dim); pop.addEventListener('mouseenter', () => clearTimeout(hideT)); pop.addEventListener('mouseleave', () => closePop());
     const ICON = id => 'assets/tree/steps/' + id.replace('.', '-') + '.png';
-    const popHtml = id => { const { b, n } = byId(id); const i = b.nodes.indexOf(n), prev = i > 0 ? b.k + '.' + b.nodes[i - 1].k : null, next = i < b.nodes.length - 1 ? b.k + '.' + b.nodes[i + 1].k : null; return `<div class="pv"><img src="${ICON(id)}" alt="" onerror="this.style.display='none'"><div class="pe">${esc(b.n)} · step ${String(i + 1).padStart(2, '0')} of ${b.nodes.length}</div><h4>${esc(n.n)}</h4><div class="pm"><div><small>Who</small><b>${esc(n.who)}</b></div><div><small>When</small><b>${esc(n.when)}</b></div><div><small>Tool</small><b>${esc(n.tool)}</b></div></div><div class="pn">${prev ? `<button type="button" data-go="${prev}">← Previous</button>` : ''}${next ? `<button type="button" data-go="${next}">Next →</button>` : ''}</div></div><div class="pb"><span class="pin">${pinned ? 'pinned · esc to close' : 'click a step to pin'}</span><button type="button" class="px" data-close aria-label="Close">×</button><p><b>What happens</b>${esc(n.what)}</p>${(n.sub || []).length ? `<div class="ps">${n.sub.map(s => `<span>${esc(s)}</span>`).join('')}</div>` : ''}<p><b>What you get</b>${esc(n.get)}</p>${(n.out || []).length ? `<ul>${n.out.map(o => `<li>${esc(o)}</li>`).join('')}</ul>` : ''}<p><b>Why it is there</b>${esc(n.why)}</p>${(n.links || []).length ? `<div class="pl"><span>Connected to</span>${n.links.map(l => { const x = byId(l); return `<button type="button" data-go="${l}" style="--c2:${x.b.c}"><i></i>${esc(x.b.n)} · ${esc(x.n.n)}</button>`; }).join('')}</div>` : ''}</div>`; };
+    const popHtml = id => { const { b, n } = byId(id); const i = b.nodes.indexOf(n), prev = i > 0 ? b.k + '.' + b.nodes[i - 1].k : null, next = i < b.nodes.length - 1 ? b.k + '.' + b.nodes[i + 1].k : null; return `<div class="pv"><img src="${ICON(id)}" alt="" aria-hidden="true" onerror="this.style.display='none'"><div class="pe">${esc(b.n)} · step ${String(i + 1).padStart(2, '0')} of ${b.nodes.length}</div><h4>${esc(n.n)}</h4><div class="pm"><div><small>Who</small><b>${esc(n.who)}</b></div><div><small>When</small><b>${esc(n.when)}</b></div><div><small>Tool</small><b>${esc(n.tool)}</b></div></div><div class="pn">${prev ? `<button type="button" data-go="${prev}">← Previous</button>` : ''}${next ? `<button type="button" data-go="${next}">Next →</button>` : ''}</div></div><div class="pb"><span class="pin">${pinned ? 'pinned · esc to close' : 'click a step to pin'}</span><button type="button" class="px" data-close aria-label="Close">×</button><p><b>What happens</b>${esc(n.what)}</p>${(n.sub || []).length ? `<div class="ps">${n.sub.map(s => `<span>${esc(s)}</span>`).join('')}</div>` : ''}<p><b>What you get</b>${esc(n.get)}</p>${(n.out || []).length ? `<ul>${n.out.map(o => `<li>${esc(o)}</li>`).join('')}</ul>` : ''}<p><b>Why it is there</b>${esc(n.why)}</p>${(n.links || []).length ? `<div class="pl"><span>Connected to</span>${n.links.map(l => { const x = byId(l); return `<button type="button" data-go="${l}" style="--c2:${x.b.c}"><i></i>${esc(x.b.n)} · ${esc(x.n.n)}</button>`; }).join('')}</div>` : ''}</div>`; };
     const place = id => { const { b } = byId(id); pop.style.setProperty('--c', b.c); const el = nodeEl(id); if (!el) return; const r = el.getBoundingClientRect(); const W = 460, H = pop.offsetHeight || 170, gap = 14; let x = r.right + gap; if (x + W > innerWidth - 16) x = r.left - gap - W; if (x < 16) x = Math.max(16, (innerWidth - W) / 2); let y = r.top + r.height / 2 - H / 2; if (y + H > innerHeight - 12) y = innerHeight - 12 - H; if (y < 80) y = 80; pop.style.left = x + 'px'; pop.style.top = y + 'px'; };
     const openPop = id => { clearTimeout(hideT); cur = id; pop.innerHTML = popHtml(id); $$('.tn', tree).forEach(e => e.classList.toggle('on', e.dataset.id === id)); pop.classList.add('on'); dim.classList.add('on'); pop.scrollTop = 0; place(id); requestAnimationFrame(() => place(id)); focus(id); };
     const closePop = (force) => { if (pinned && !force) return; pinned = false; clearTimeout(hideT); hideT = setTimeout(() => { pop.classList.remove('on'); dim.classList.remove('on'); $$('.tn', tree).forEach(e => e.classList.remove('on')); cur = null; focus(null); }, force ? 0 : 220); };
@@ -640,7 +642,7 @@
     if (reduce || mobile() || !('IntersectionObserver' in window)) live(); else { const io = new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); live(); }, { threshold: 0, rootMargin: '0px 0px -10% 0px' }); io.observe(tree); setTimeout(() => { if (!tree.classList.contains('live')) live(); }, 4000); }
   })();
   /* on the board this month */
-  { const row = $('#nowRow'); if (row && D.nowBoard) row.innerHTML = D.nowBoard.map(([sl, n, t, ini]) => `<span class="nb"><img src="assets/clients/${sl}.jpg" alt="" loading="lazy" data-ini="${ini}" onerror="PMimgFail(this)"><span><b>${esc(n)}</b><span>${esc(t)}</span></span></span>`).join(''); }
+  { const row = $('#nowRow'); if (row && D.nowBoard) row.innerHTML = D.nowBoard.map(([sl, n, t, ini]) => `<span class="nb"><img src="assets/clients/${sl}.jpg" alt="" aria-hidden="true" loading="lazy" data-ini="${ini}" onerror="PMimgFail(this)"><span><b>${esc(n)}</b><span>${esc(t)}</span></span></span>`).join(''); }
   /* faq + schema */
   { const f = $('#faqList'); if (f && D.faq) { f.innerHTML = D.faq.map(([q, a], i) => `<details ${i === 0 ? 'open' : ''}><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join(''); const ld = $('#faqLd'); if (ld) ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: D.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }); } }
 
