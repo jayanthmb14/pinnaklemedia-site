@@ -37,7 +37,7 @@ window.PM = (() => {
     'anshul-kumar':     { name: 'Anshul Kumar', short: 'Anshul Kumar', niche: 'Productivity · AI', platform: 'YouTube, Instagram', subs: '62K subscribers', since: 'Oct 2025', until: '2026', channel: '' },
     'serena':           { name: 'Serena Musick · Purely Tallow', short: 'Purely Tallow', niche: 'DTC skincare · carnivore', platform: 'Instagram, YouTube', subs: '58K subscribers · DTC skincare', since: 'Aug 2025', until: 'today', channel: 'https://www.instagram.com/purelytallowskincare/' },
     'courtney-luna':    { name: 'Courtney Luna', short: 'Courtney Luna', niche: 'Carnivore diet · vlogs', platform: 'YouTube, Facebook', subs: '127K subscribers', since: 'Sep 2025', until: 'today', channel: 'https://www.youtube.com/c/courtneyluna' },
-    'veronica-monet':   { name: 'Veronica Monet · The Shame Free Zone', short: 'Veronica Monet', niche: 'Relationships · healing', platform: 'YouTube, Facebook', subs: '5/5 TidyCal review', since: 'May 2026', until: 'today', channel: 'https://www.youtube.com/@VeronicaMonet' },
+    'veronica-monet':   { name: 'Veronica Monet · The Shame Free Zone', short: 'Veronica Monet', niche: 'Trauma healing · relationships', platform: 'YouTube, Facebook, LinkedIn, Instagram', subs: 'Meaningful engagement on 4 platforms', since: 'May 2026', until: 'today', channel: 'https://www.youtube.com/@VeronicaMonet' },
     'ryan-making-money-simple': { name: 'Ryan · Making Money Simple', short: 'Making Money Simple', niche: 'UK personal finance · author', platform: 'YouTube', subs: '15K subscribers · UK finance', since: 'May 2026', until: 'today', channel: '' },
     'charente-carr':    { name: 'Charente Carr · JCLV 21', short: 'Charente Carr', niche: 'Lifestyle vlogs · VidCon', platform: 'YouTube', subs: '537K subscribers', since: 'Dec 2024', until: '2026', channel: 'https://www.youtube.com/@CharenteC' },
     'sabby-sabs':       { name: 'Sabrina Salvati · Sabby Sabs', short: 'Sabby Sabs', niche: 'Political commentary', platform: 'YouTube', subs: '423K subscribers', since: 'Jan 2025', until: '2026', channel: 'https://www.youtube.com/@SabbySabs' },
@@ -173,7 +173,7 @@ window.PM = (() => {
     { yt:'vqWtlqUQ9bc', client:'elijah-eagle', orient:'landscape', title:'Elijah Eagle, Hour of His Glory', meta:'15 Shorts a week + long-form · recorded Nov 2025' },
     { yt:'cmra3jv0onM', client:'thrivewell', orient:'portrait', title:'L. Michael Burt, The ThriveWell Journey', meta:'15K → 20K subscribers · recorded Jan 2026' },
     { yt:'ajTPqdk87Ok', client:'dudley', orient:'portrait', title:'Dudley J. Edouard, unprompted', meta:'A WhatsApp thank-you after 0 → 12K · 2025' },
-    { mp4:'assets/video/veronica-testimonial.mp4', poster:'assets/video/veronica-poster.jpg', client:'veronica-monet', orient:'landscape', title:'Veronica Monet, The Shame Free Zone', meta:'Community posts, reels and long-form · recorded Oct 2026' },
+    { mp4:'assets/video/veronica-testimonial.mp4', poster:'assets/video/veronica-poster.jpg', client:'veronica-monet', orient:'landscape', title:'“What you did is perfect, absolutely perfect.”', meta:'Veronica Monet · trauma-informed content on 4 platforms · Oct 2026' },
   ];
 
   /* Written quotes. src: where it came from; date shown as month + year only. */
@@ -203,7 +203,10 @@ window.PM = (() => {
     { c:'charente-carr', q:'I greatly appreciate each and every single one of you. Thank you!', who:'Charente Carr', role:'JCLV 21', src:'Slack', date:'Jan 2026' },
     { c:'charente-carr', q:'Editing rating went from 3 out of 5 to 5 out of 5.', who:'Charente Carr', role:'status call summary', src:'Call', date:'Aug 2025' },
     { c:'truthseekah', q:'Whoever is doing the editing, great job. The images and moving images and sounds are looking so much better than the last batch. I like how at the end it shows the thumbnail of the podcast the clip came from.', who:'TruthSeekah', role:'129K+ subscribers · relayed by the team', src:'Slack', date:'Jun 2025', star:true },
-    { c:'veronica-monet', q:'5 out of 5 stars. Prateek was great!', who:'Veronica Monet', role:'The Shame Free Zone', src:'TidyCal review', date:'May 2026', star:true },
+    { c:'veronica-monet', q:'I am now getting a worthwhile, meaningful engagement from my subscribers and my followers. And that’s what I wanted.', who:'Veronica Monet', role:'The Shame Free Zone · on camera', src:'Video call', date:'Oct 2026', star:true },
+    { c:'veronica-monet', q:'I deal with some very, very sensitive topics… It’s quite a balancing act. I am now feeling like I don’t really have to offer her that much feedback.', who:'Veronica Monet', role:'The Shame Free Zone · on camera', src:'Video call', date:'Oct 2026' },
+    { c:'veronica-monet', q:'What you did is perfect, absolutely perfect. It’s such a good feeling to be working with somebody who really gets a topic that is so hard to grok.', who:'Veronica Monet', role:'The Shame Free Zone · on camera', src:'Video call', date:'Oct 2026' },
+    { c:'veronica-monet', q:'5 out of 5 stars. Prateek was great!', who:'Veronica Monet', role:'The Shame Free Zone', src:'TidyCal review', date:'May 2026' },
     { c:'foyr', q:'We truly appreciate our ongoing partnership and the work you do for us.', who:'Anushua Nath', role:'Sr Digital Marketing Manager, Foyr', src:'Email', date:'Mar 2026', star:true },
     { c:'marco-torres', q:'We handed them raw footage and got back a system. That’s the difference between an editor and a content team.', who:'Marco Torres', role:'Founder', src:'Partner deck', date:'2026' },
     { c:'anshul-kumar', q:'Nice graphics and design… great style. Just a quick fix on some lines and then good to go!', who:'Anshul Kumar', role:'YouTube creator', src:'Review notes', date:'Sep 2025' },

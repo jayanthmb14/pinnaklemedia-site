@@ -292,6 +292,11 @@
     if (v.startsWith('yt:')) { const id = v.slice(3); return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Video"></iframe></div>`; }
     return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><video src="${v.slice(4)}" controls autoplay playsinline></video></div>`;
   };
+  /* a client's own video testimonial(s), playable inside their story */
+  const onCamera = slug => { const vs = (D.videoTestimonials || []).filter(v => v.client === slug); if (!vs.length) return '';
+    return `<h5>On camera</h5>${vs.map(v => v.yt
+      ? `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(v.title)}"></iframe></div>`
+      : `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><video src="${v.mp4}" poster="${v.poster || ''}" controls playsinline preload="none" aria-label="${esc(v.title)}"></video></div>`).join('')}<p class="small muted" style="margin-top:6px">${esc(vs[0].title)} · ${esc(vs[0].meta || '')}</p>`; };
   const clientHead = (slug, extra = '') => { const c = client(slug); if (!c) return `<div class="mhead"><span class="ini">PM</span><div><h3>Pinnakle Media client</h3><div class="meta">${extra}</div></div></div>`; return `<div class="mhead">${avatar(slug)}<div><h3>${esc(c.name)}</h3><div class="meta">${esc(c.niche)} · ${esc(c.platform)}${c.since ? ` · client ${esc(c.since)}${c.until ? ' → ' + esc(c.until) : ''}` : ''}${extra}</div></div></div>`; };
   const clientLinks = slug => { const c = client(slug); return c && c.channel ? `<div class="mlinks"><a class="btn btn-ghost" href="${c.channel}" target="_blank" rel="noopener">Visit ${esc(c.short)} ↗</a></div>` : ''; };
   const quoteBlock = q => `<div class="mq" data-src="${srcKey(q.src)}">“${esc(q.q)}”<small>${esc(q.who)} · ${esc(q.src)}, ${esc(q.date)}</small></div>`;
@@ -302,6 +307,7 @@
       <h5>What we did</h5><ul>${(k.did || []).map(d => `<li>${esc(d)}</li>`).join('')}</ul>
       <h5>Results</h5><div class="chips">${k.chips.map(([t, kind]) => `<span class="chip ${kind}">${esc(t)}</span>`).join('')}</div>
       ${k.proof ? `<h5>Proof</h5><img src="${k.proof}" alt="Analytics screenshot" style="border-radius:12px;box-shadow:var(--sh)">${k.proof2 ? `<img src="${k.proof2}" alt="Video analytics" style="border-radius:12px;box-shadow:var(--sh);margin-top:10px">` : ''}` : ''}
+      ${onCamera(slug)}
       ${receiptsFor(slug)}
       ${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}
       ${k.testimonial ? `<h5>Video testimonial</h5>${videoHtml(k.testimonial === 'bkbq' ? 'mp4:assets/video/bkbq-testimonial.mp4' : 'yt:' + k.testimonial, k.testimonial === 'bkbq' || k.testimonial === '805KmIDmzNo' || k.testimonial === 'EfHn0koliq0' ? 'portrait' : 'landscape')}` : k.video ? `<h5>Sample</h5>${videoHtml('yt:' + k.video, 'portrait')}` : ''}
@@ -310,7 +316,7 @@
   const openClient = slug => {
     const k = D.cases.find(x => x.slug === slug); if (k) return openCase(slug);
     const c = client(slug); const quotes = D.quotes.filter(q => q.c === slug); const win = D.wins.filter(w => w[1] === slug);
-    openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${win.length ? `<h5>The work</h5><ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${receiptsFor(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${clientLinks(slug)}</div>`);
+    openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${win.length ? `<h5>The work</h5><ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${onCamera(slug)}${receiptsFor(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${clientLinks(slug)}</div>`);
   };
   const openVideo = (v, orient, slug) => openModal(`${slug ? clientHead(slug) : ''}<div class="mbody">${videoHtml(v, orient)}</div>`);
   const openYear = i => {
@@ -438,34 +444,46 @@
     if (G) G.to($$('.ichip, .fchip.fly', cloud), { y: '+=7', duration: 1.3, yoyo: true, repeat: -1, ease: 'sine.inOut', force3D: true, stagger: { each: .015, from: 'random' } });
   };
   const runIntro = () => {
-    $$('.hero .rv').forEach(el => el.classList.add('now', 'in')); void document.body.offsetWidth;
+    /* 1. the proof sits cluttered on screen  2. the growth line draws through it and pushes every chip outward as it passes
+       3. the hero's own stat cards fly into their slots  4. the cover fades and the hero (already in its final layout) fades up */
     const rest = $$('.ichip', cloud); const flyers = $$('.fchip.fly', cloud);
     G.killTweensOf([...rest, ...flyers]);
-    const vh = innerHeight;
-    const tl = G.timeline({ onComplete: () => { intro.remove(); $$('.hero .rv.now').forEach(el => el.classList.remove('now')); $('.hero').classList.add('rdy'); } });
-    const ang = Math.atan2((12 - 57) / 100 * innerHeight, (78 - 64) / 100 * innerWidth) * 180 / Math.PI; G.set('.intro-head', { rotation: ang, scale: 0, transformOrigin: '28% 50%' });
-    tl.to('.intro-arrow .ia', { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut' }, 0)
-      .to('.intro-head', { opacity: 1, scale: 1, rotation: ang, duration: .18, ease: 'back.out(3)' }, .62);
-    tl.to(rest, { y: (i, el) => -(vh * .85 + (i % 5) * 70), x: (i, el) => (50 - parseFloat(el.style.left)) * 2.4, rotation: i => (i % 2 ? 6 : -6), opacity: 0, duration: .75, ease: 'power3.inOut', stagger: { each: .005, from: 'random' } }, .15);
+    const vw = innerWidth, vh = innerHeight, narrow = vw < 700;
+    const finish = () => { if (intro.isConnected) intro.remove(); $('.hero').classList.add('rdy'); };
+    const tl = G.timeline({ onComplete: finish });
+    const DRAW = narrow ? .75 : .9;
+    const ang = Math.atan2((12 - 57) / 100 * vh, (78 - 64) / 100 * vw) * 180 / Math.PI;
+    G.set('.intro-head', { rotation: ang, scale: 0, transformOrigin: '28% 50%' });
+    tl.to('.intro-arrow .ia', { strokeDashoffset: 0, duration: DRAW, ease: 'power2.inOut' }, .12)
+      .to('.intro-head', { opacity: 1, scale: 1, rotation: ang, duration: .2, ease: 'back.out(2.5)' }, .12 + DRAW - .14);
+    /* each chip is pushed when the line passes its x position, away from the line (up-left of it goes further up-left, below-right goes down-right) */
+    rest.forEach(el => {
+      const lx = parseFloat(el.style.left), ly = parseFloat(el.style.top);
+      const lineY = 97 - lx * .95;                       /* the arrow rises roughly corner to corner */
+      const side = ly < lineY ? -1 : 1;                  /* above the line moves up, below moves down */
+      const away = 40 + Math.random() * 30;
+      tl.to(el, { x: (lx - 50) * vw / 100 * .35 + side * -away * .4, y: side * (vh * .22 + away), rotation: side * (6 + Math.random() * 8), scale: .86, opacity: 0, duration: .62, ease: 'power2.in' }, .12 + (lx / 100) * DRAW * .85);
+    });
     flyers.forEach((el, i) => {
       const t = $(`.board .fchip[data-fly="${el.dataset.fly}"]`);
-      if (!t || !t.offsetParent) { tl.to(el, { y: -vh, opacity: 0, duration: .7, ease: 'power3.inOut' }, .2); return; }
+      if (!t || !t.offsetParent) { tl.to(el, { y: -vh * .5, opacity: 0, duration: .6, ease: 'power2.in' }, .3); return; }
       G.set(t, { y: 0, scale: 1, opacity: 0 });
       const a = el.getBoundingClientRect(), b = t.getBoundingClientRect();
       const dx = (b.left + b.width / 2) - (a.left + a.width / 2), dy = (b.top + b.height / 2) - (a.top + a.height / 2);
-      tl.to(el, { x: '+=' + dx, y: '+=' + dy, rotation: 0, duration: .8, ease: 'power3.inOut', onComplete: () => { G.set(t, { opacity: 1 }); el.style.opacity = 0; } }, .22 + i * .04);
+      tl.to(el, { x: '+=' + dx, y: '+=' + dy, rotation: 0, duration: .85, ease: 'power3.inOut', onComplete: () => { G.set(t, { opacity: 1 }); el.style.opacity = 0; } }, .45 + i * .06);
     });
-    tl.to('.intro-bg', { opacity: 0, duration: .3, ease: 'power2.out' }, innerWidth < 700 ? .6 : .45)
-      .add(() => heroIntro(true), .42)
-      .to('.intro-arrow, .intro-head', { opacity: 0, duration: .35, ease: 'power2.out' }, 1.05);
+    const REVEAL = .12 + DRAW * .8;
+    tl.add(() => { $$('.hero .rv').forEach(el => el.classList.add('in')); heroIntro(true); }, REVEAL - .05)
+      .to('.intro-bg', { opacity: 0, duration: .55, ease: 'power1.inOut' }, REVEAL)
+      .to('.intro-arrow, .intro-head', { opacity: 0, duration: .45, ease: 'power1.out' }, REVEAL + .45);
   };
   if (intro && cloud && G && !reduce) {
     buildIntro();
     let started = false; const start = () => { if (started) return; started = true; runIntro(); };
     const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-    Promise.race([fontsReady, new Promise(r => setTimeout(r, 650))]).then(() => setTimeout(start, 120));
-    setTimeout(start, 1100);
-    setTimeout(() => { const el = $('#intro'); if (el) { el.remove(); $$('.hero .rv').forEach(x => { x.classList.add('in'); x.classList.remove('now'); }); } $('.hero').classList.add('rdy'); }, 3200);
+    Promise.race([fontsReady, new Promise(r => setTimeout(r, 250))]).then(() => requestAnimationFrame(start));
+    setTimeout(start, 700);
+    setTimeout(() => { const el = $('#intro'); if (el) { el.remove(); $$('.hero .rv').forEach(x => x.classList.add('in')); } $('.hero').classList.add('rdy'); }, 3400);
   } else { if (intro) intro.remove(); $('.hero').classList.add('rdy'); if (document.readyState === 'complete') heroIntro(); else addEventListener('load', () => heroIntro()); }
   addEventListener('load', () => { if (ST) setTimeout(() => ST.refresh(), 200); });
   [...document.images].forEach(i => { i.decoding = 'async'; });
