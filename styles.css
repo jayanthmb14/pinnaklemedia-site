@@ -1169,3 +1169,36 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
   .vgrid{grid-template-columns:repeat(2,1fr)}.tgrid{columns:2}.pipe-steps{grid-template-columns:repeat(3,1fr)}.founders{grid-template-columns:1fr}
 }
 .tn.on{position:relative;z-index:152}
+
+/* ---------- SEO run 22 Oct 2026: Services menu, service-guide links ---------- */
+.nav-dd{position:relative}
+.nav-dd-btn{font:inherit;font-weight:500;font-size:14px;color:var(--ink-2);background:none;border:0;padding:6px 0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.nav-dd-btn::after{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .3s var(--ease)}
+.nav-dd:hover .nav-dd-btn,.nav-dd.on .nav-dd-btn,.nav-dd-btn:focus-visible{color:var(--ink)}
+.nav-dd-menu{position:absolute;top:calc(100% + 10px);right:-14px;width:300px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 22px 50px -24px rgba(15,15,15,.35);padding:8px;display:grid;gap:2px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .25s,transform .3s var(--ease),visibility .25s;z-index:5}
+.nav-dd-menu::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}
+.nav-dd:hover .nav-dd-menu,.nav-dd:focus-within .nav-dd-menu,.nav-dd.on .nav-dd-menu{opacity:1;visibility:visible;transform:none}
+.nav-dd:hover .nav-dd-btn::after,.nav-dd.on .nav-dd-btn::after{transform:translateY(1px) rotate(225deg)}
+.nav-links .nav-dd-menu a{display:grid;gap:2px;padding:10px 12px;border-radius:11px}
+.nav-links .nav-dd-menu a::after{display:none}
+.nav-links .nav-dd-menu a:hover{background:var(--bg-2)}
+.nav-dd-menu b{font-size:14px;color:var(--ink);font-weight:600}
+.nav-dd-menu span{font-size:12.5px;color:var(--ink-3);font-weight:400;line-height:1.35}
+@media(max-width:880px){
+  .nav-links{overflow-y:auto}
+  .nav-dd{display:contents}
+  .nav-dd-btn{display:none}
+  .nav-dd-menu{position:static;display:contents;opacity:1;visibility:visible;transform:none}
+  .nav-links .nav-dd-menu a{display:block;padding:10px 0;border-radius:0}
+  .nav-links .nav-dd-menu a:hover{background:none}
+  .nav-dd-menu b{font-size:inherit;font-weight:inherit;color:inherit}
+  .nav-dd-menu span{display:none}
+}
+.svc-links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:22px 0 0;font-size:14px}
+.svc-links>span{font-family:var(--font-l);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.svc-links a{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:#fff;border:1px solid var(--line-2);font-weight:600;color:var(--ink);transition:border-color .3s,transform .3s var(--ease)}
+.svc-links a:hover{border-color:var(--ink);transform:translateY(-1px)}
+.nav-links>a,.nav-dd-btn,.nav .btn-call{white-space:nowrap}
+@media(min-width:881px) and (max-width:1320px){.nav-in{gap:14px}.nav-links{gap:16px}.nav-links>a,.nav-dd-btn{font-size:13.5px}.nav .cta-desk{padding:10px 14px;font-size:13.5px}}
+.nav-in>.logo,.nav .cta-desk{flex:none}
+@media(min-width:881px) and (max-width:1120px){.nav>.nav-in>.switch{display:none}}
