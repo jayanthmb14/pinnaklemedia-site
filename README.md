@@ -8,7 +8,7 @@ Live: **https://pinnaklemedia.com**
 
 ## About Pinnakle Media
 
-Pinnakle Media (a brand of PKJMB Media Pvt Ltd, incorporated 22 December 2023) started in October 2022 as *Cut To Pro*, a one-person editing service, and was co-founded on 6 December 2022 by **Jayanth M B** (Founder & CEO) and **Prateek Kumar Tiwari** (Co-founder & MD). Today it is a ten-person team that runs content for creators and brands in the US, Canada, the UK and India.
+Pinnakle Media (a brand of PKJMB Media Pvt Ltd, incorporated 22 December 2023) started in October 2022 as *Cut To Pro*, a one-person editing service, and was co-founded on 6 December 2022 by **Jayanth M B** (Founder & CEO) and **Prateek Kumar Tiwari** (Co-founder & MD). Today it is a ten-person team that runs content for creators and brands in the US, Canada, the UK and other high-income markets.
 
 What the studio does:
 
