@@ -136,11 +136,8 @@
     const lc = $('#liveCount'); const t0 = Date.now(); const upd = () => { lc.textContent = Math.floor((Date.now() - t0) / 1000 / 3.6).toLocaleString(); }; setInterval(upd, 1000); upd(); }
 
   /* ---------- REVIEWS ---------- */
-  { const grid = $('#revGrid'), tabs = $('#revTabs'); const SRC = { google: ['G', 'Google'], trustpilot: ['★', 'Trustpilot'], facebook: ['f', 'Facebook'] };
-    grid.innerHTML = D.reviews.map(r => `<div class="rev" data-src="${r.src}"><div class="top"><img src="${r.ph}" alt="" loading="lazy"><div><b>${esc(r.n)}</b><span>${esc(r.r)}</span></div><span class="src-badge ${r.src}" title="${SRC[r.src][1]}">${SRC[r.src][0]}</span></div><div class="meta"><span class="st">${stars(r.st)}</span><span>${esc(r.d)}</span><span class="vf">✓ Verified client</span></div><p>${esc(r.q)}</p></div>`).join('');
-    const all = [['all', '🌐 All'], ['google', 'G Google'], ['trustpilot', '★ Trustpilot'], ['facebook', 'f Facebook']];
-    tabs.innerHTML = all.map(([k, l], i) => `<button type="button" class="rt-b ${i === 0 ? 'on' : ''}" data-k="${k}">${l}</button>`).join('');
-    tabs.addEventListener('click', e => { const b = e.target.closest('.rt-b'); if (!b) return; $$('.rt-b', tabs).forEach(x => x.classList.toggle('on', x === b)); $$('.rev', grid).forEach(r => r.classList.toggle('hide', b.dataset.k !== 'all' && r.dataset.src !== b.dataset.k)); $('#revSrcLabel').textContent = b.dataset.k === 'all' ? 'Google, Trustpilot, Facebook' : SRC[b.dataset.k][1]; }); }
+  { const grid = $('#revGrid');
+    grid.innerHTML = D.reviews.map(r => `<div class="rev"><div class="top"><img src="${r.ph}" alt="" loading="lazy"><div><b>${esc(r.n)}</b><span>${esc(r.r)}</span></div></div><div class="meta"><span class="vf">Illustrative example</span></div><p>${esc(r.q)}</p></div>`).join(''); }
 
   /* ---------- OFFERS, START, LAUNCH, FAQ, TAPE ---------- */
   $('#offerGrid').innerHTML = D.offers.map((o, i) => `<div class="offer rv ${o.hot ? 'hot' : ''}" data-d="${i}"><div class="top"><span class="e">${o.e}</span><h4>${esc(o.n)}</h4><span class="tag">${esc(o.tag)}</span></div><p class="who">${esc(o.who)}</p><span class="inc">Core five, weekly report, a human who answers</span><ul>${o.get.map(g => `<li>${esc(g)}</li>`).join('')}</ul><ol class="how"><span class="how-l">How it runs</span>${(o.how||[]).map(([w,t])=>`<li><b>${esc(w)}</b><span>${esc(t)}</span></li>`).join('')}</ol><div class="promise">${esc(o.promise)}</div><a class="cta" href="https://tidycal.com/pinnaklemedia/15-minute-meeting" target="_blank" rel="noopener" data-book>Scope it on a call →</a></div>`).join('');

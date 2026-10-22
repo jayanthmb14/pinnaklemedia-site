@@ -223,6 +223,7 @@
   let pbManual = false;
   setTimeout(() => setPlaybook(0, true), 0);
   /* ---------------- render: testimonials ---------------- */
+  { const vc = $('#vtCount'); if (vc) { const n = new Set((D.videoTestimonials || []).map(v => v.client || v.yt || v.mp4)).size; const W = ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty']; vc.textContent = W[n] || String(n); } }
   const vgrid = $('#vgrid');
   if (vgrid) vgrid.innerHTML = D.videoTestimonials.map((v, i) => {
     const c = client(v.client); const poster = v.poster || (v.yt ? ytThumb(v.yt) : '');
