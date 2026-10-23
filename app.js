@@ -507,7 +507,9 @@
   /* ---------------- the film: nothing loads until play; chapters seek; pauses when scrolled away ---------------- */
   { const v = $('#filmVideo'), wrap = v && v.closest('.film-player'), btn = $('#filmPlay'), ch = $$('#filmCh button');
     if (v && wrap) {
-      const go = t => { wrap.classList.add('on'); v.controls = true; if (typeof t === 'number') { const seek = () => { v.currentTime = t; }; if (v.readyState >= 1) seek(); else v.addEventListener('loadedmetadata', seek, { once: true }); } v.play().catch(() => {}); };
+      const mob = matchMedia('(max-width: 700px)').matches;
+      if (mob) { wrap.classList.add('mob'); v.poster = v.dataset.posterMob; }
+      const go = t => { if (!v.getAttribute('src')) { v.src = mob ? v.dataset.mob : v.dataset.desk; v.load(); } wrap.classList.add('on'); v.controls = true; if (typeof t === 'number') { const seek = () => { v.currentTime = t; }; if (v.readyState >= 1) seek(); else v.addEventListener('loadedmetadata', seek, { once: true }); } v.play().catch(() => {}); };
       btn && btn.addEventListener('click', () => go());
       ch.forEach(b => b.addEventListener('click', () => { go(+b.dataset.t); if (wrap.getBoundingClientRect().top < 0 || wrap.getBoundingClientRect().bottom > innerHeight) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
       v.addEventListener('timeupdate', () => { let k = -1; ch.forEach((b, i) => { if (v.currentTime >= +b.dataset.t - .2) k = i; }); ch.forEach((b, i) => b.classList.toggle('on', i === k)); });

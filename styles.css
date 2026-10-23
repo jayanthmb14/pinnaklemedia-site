@@ -1218,6 +1218,7 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
 .film-play:hover .fp-btn{transform:scale(1.07)}
 .film-play .fp-t{display:flex;flex-direction:column;line-height:1.15}.film-play b{font-family:var(--font-d);font-size:clamp(20px,2.4vw,30px);letter-spacing:-.02em}.film-play i{font-style:normal;font-size:13px;color:rgba(255,255,255,.75);margin-top:4px}
 .film-player.on .film-play{opacity:0;pointer-events:none}
+.film-player.mob{aspect-ratio:4/5}
 .film-ch{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .film-ch button{appearance:none;font:inherit;font-size:13px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center;transition:background .25s,border-color .25s,color .25s}
 .film-ch button span{font-family:var(--font-l);font-size:11px;color:var(--yellow)}
