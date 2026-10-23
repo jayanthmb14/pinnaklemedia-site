@@ -504,6 +504,17 @@
   ['copy', 'cut'].forEach(ev => document.addEventListener(ev, e => { if (!e.target.closest('input, textarea')) { e.preventDefault(); if (e.clipboardData) e.clipboardData.setData('text/plain', '© Pinnakle Media · pinnaklemedia.com'); } }));
   document.addEventListener('keydown', e => { const k = e.key.toLowerCase(); if ((e.metaKey || e.ctrlKey) && ['s', 'u', 'p', 'a', 'c', 'x'].includes(k) && !e.target.closest('input, textarea')) e.preventDefault(); if (k === 'f12' || ((e.metaKey || e.ctrlKey) && e.shiftKey && ['i', 'j', 'c'].includes(k))) e.preventDefault(); });
 
+  /* ---------------- the film: nothing loads until play; chapters seek; pauses when scrolled away ---------------- */
+  { const v = $('#filmVideo'), wrap = v && v.closest('.film-player'), btn = $('#filmPlay'), ch = $$('#filmCh button');
+    if (v && wrap) {
+      const go = t => { wrap.classList.add('on'); v.controls = true; if (typeof t === 'number') { const seek = () => { v.currentTime = t; }; if (v.readyState >= 1) seek(); else v.addEventListener('loadedmetadata', seek, { once: true }); } v.play().catch(() => {}); };
+      btn && btn.addEventListener('click', () => go());
+      ch.forEach(b => b.addEventListener('click', () => { go(+b.dataset.t); if (wrap.getBoundingClientRect().top < 0 || wrap.getBoundingClientRect().bottom > innerHeight) wrap.scrollIntoView({ behavior: 'smooth', block: 'center' }); }));
+      v.addEventListener('timeupdate', () => { let k = -1; ch.forEach((b, i) => { if (v.currentTime >= +b.dataset.t - .2) k = i; }); ch.forEach((b, i) => b.classList.toggle('on', i === k)); });
+      v.addEventListener('play', () => { if (typeof gtag === 'function') gtag('event', 'film_play', { position: Math.round(v.currentTime) }); });
+      v.addEventListener('ended', () => { if (typeof gtag === 'function') gtag('event', 'film_complete'); });
+      new IntersectionObserver(es => es.forEach(x => { if (!x.isIntersecting && !v.paused) v.pause(); }), { threshold: .15 }).observe(wrap);
+    } }
   /* ---------------- scroll-driven bits ---------------- */
   if (G && ST && !reduce) {
     G.to('.hero-bg .r1', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
