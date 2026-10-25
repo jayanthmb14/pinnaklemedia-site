@@ -415,3 +415,6 @@ footer{background:#fff;padding:30px 0 26px;border-top:1px solid var(--line)}
 .pt{position:fixed;inset:0;z-index:200;pointer-events:none;background:var(--pt,#0F8A5F);clip-path:circle(0% at var(--x,50%) var(--y,50%));transition:clip-path .55s cubic-bezier(.7,0,.2,1)}
 .pt.go{clip-path:circle(150% at var(--x,50%) var(--y,50%));pointer-events:auto}
 .pt.in{transition:none;clip-path:circle(150% at 50% 0%)}.pt.in.out{transition:clip-path .7s cubic-bezier(.2,.8,.2,1) .05s;clip-path:circle(0% at 50% 0%)}
+
+/* coaches block */
+.coach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cg{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}.cg h3{font-family:var(--font-d);font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}.cg p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}.cg ul{margin:0;padding-left:18px;font-size:15px;line-height:1.6;color:var(--ink-2)}@media(max-width:860px){.coach-grid{grid-template-columns:1fr}}
