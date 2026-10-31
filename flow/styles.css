@@ -418,3 +418,10 @@ footer{background:#fff;padding:30px 0 26px;border-top:1px solid var(--line)}
 
 /* coaches block */
 .coach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cg{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}.cg h3{font-family:var(--font-d);font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}.cg p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}.cg ul{margin:0;padding-left:18px;font-size:15px;line-height:1.6;color:var(--ink-2)}@media(max-width:860px){.coach-grid{grid-template-columns:1fr}}
+
+/* Live chat bubble (bottom-right, loaded from the chat provider): keep the back-to-top button and the phone bar clear of it */
+.totop{right:auto;left:18px}
+@media(max-width:860px){
+  .totop{left:12px;right:auto}
+  .mob-bar{right:84px}
+}
