@@ -1227,3 +1227,7 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
 .film-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.5)}
 @media(max-width:860px){.film-head{grid-template-columns:1fr;gap:12px}}
 @media(max-width:700px){.film-player{border-radius:16px}.film-ch{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(-1*var(--gut));padding:0 var(--gut) 4px}.film-ch::-webkit-scrollbar{display:none}.film-ch li{flex:none}}
+
+/* Live chat bubble sits bottom-right: back-to-top moves to the left */
+.totop{right:auto!important;left:18px}
+@media(max-width:860px){.totop{left:12px}}
