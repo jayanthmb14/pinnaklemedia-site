@@ -15,9 +15,11 @@
     "--chat-widget-welcome-message-text-color": "#0E1A14", "--chat-widget-system-message-text-color": "#4C5A52",
     "--chat-widget-font-family": "'Geist',system-ui,-apple-system,'Segoe UI',sans-serif", "--ion-font-family": "'Geist',system-ui,sans-serif",
     "--ion-color-primary": "#0F8A5F", "--color": "#0F8A5F",
+    /* compact: narrower, shorter window */
+    "--chat-widget-width": "300px", "--chat-widget-height": "68vh", "--chat-widget-max-height": "520px", "--chat-widget-branding-max-height": "540px",
   };
   var TEXT = {
-    prompt: "Hi! Questions about PinnakleFlow? Ask us here.",
+    prompt: "Questions about PinnakleFlow? Ask here.",
     heading: "Chat with PinnakleFlow",
     sub: "Ask about setup, pricing or the $1 start. We reply here, or by text if you leave your number.",
   };
@@ -45,6 +47,20 @@
     ".lc_send_button--container button,button[type=submit]{background:var(--flow-grad)!important;border-radius:999px!important;font-weight:600!important;box-shadow:0 10px 24px -12px rgba(15,138,95,.8)!important}",
     ".lc_legal-text,.lc_legal-msg{color:#4C5A52!important}",
     ".lc_legal-text a,.lc_legal-msg a{color:#0B6B49!important}",
+    /* compact sizes */
+    ".lc_text-widget--bubble{width:48px!important;height:48px!important;min-width:48px!important}",
+    ".lc_text-widget--bubble svg{width:21px!important;height:21px!important}",
+    ".lc_text-widget_prompt--msg-bubble{padding:8px 10px!important;gap:8px!important;max-width:240px!important}",
+    ".lc_text-widget_prompt--avatar{width:30px!important;height:30px!important;min-width:30px!important}",
+    ".lc_text-widget_prompt--prompt-text{font-size:13px!important;line-height:1.35!important}",
+    ".lc_text-widget_prompt--prompt-close{transform:scale(.75)}",
+    ".lc_text-widget_heading--content{font-size:16px!important}",
+    ".lc_text-widget_sub-heading,.lc_text-widget_sub-heading--root{font-size:13.5px!important;padding:10px 12px!important}",
+    ".header-circular-image{width:36px!important;height:36px!important}",
+    ".message-circular-image{width:28px!important;height:28px!important}",
+    "input,textarea{font-size:14px!important}",
+    ".lc_legal-text,.lc_legal-msg{font-size:10.5px!important;line-height:1.4!important}",
+    ".lc_send_button--container button,button[type=submit]{font-size:14px!important;min-height:38px!important}",
     /* no third-party branding line */
     ".lc_text-widget--agency-branding{display:none!important}",
   ].join("\n");
