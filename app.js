@@ -300,7 +300,7 @@
       ? `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(v.title)}"></iframe></div>`
       : `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><video src="${v.mp4}" poster="${v.poster || ''}" controls playsinline preload="none" aria-label="${esc(v.title)}"></video></div>`).join('')}<p class="small muted" style="margin-top:6px">${esc(vs[0].title)} · ${esc(vs[0].meta || '')}</p>`; };
   const clientHead = (slug, extra = '') => { const c = client(slug); if (!c) return `<div class="mhead"><span class="ini">PM</span><div><h3>Pinnakle Media client</h3><div class="meta">${extra}</div></div></div>`; return `<div class="mhead">${avatar(slug)}<div><h3>${esc(c.name)}</h3><div class="meta">${esc(c.niche)} · ${esc(c.platform)}${c.since ? ` · client ${esc(c.since)}${c.until ? ' → ' + esc(c.until) : ''}` : ''}${extra}</div></div></div>`; };
-  const clientLinks = slug => { const c = client(slug); return c && c.channel ? `<div class="mlinks"><a class="btn btn-ghost" href="${c.channel}" target="_blank" rel="noopener">Visit ${esc(c.short)} ↗</a></div>` : ''; };
+  const clientLinks = slug => { const c = client(slug); if (!c || !(c.channel || c.site)) return ''; return `<div class="mlinks">${c.channel ? `<a class="btn btn-ghost" href="${c.channel}" target="_blank" rel="noopener">Visit ${esc(c.short)} ↗</a>` : ''}${c.site ? `<a class="btn btn-ghost" href="${c.site}" target="_blank" rel="noopener">${esc(c.site.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))} ↗</a>` : ''}</div>`; };
   const quoteBlock = q => `<div class="mq" data-src="${srcKey(q.src)}">“${esc(q.q)}”<small>${esc(q.who)} · ${esc(q.src)}, ${esc(q.date)}</small></div>`;
   const openCase = slug => {
     const k = D.cases.find(x => x.slug === slug); if (!k) return;
@@ -320,7 +320,7 @@
     const c = client(slug); const quotes = D.quotes.filter(q => q.c === slug); const win = D.wins.filter(w => w[1] === slug);
     openModal(`${clientHead(slug)}<div class="mbody">${c && c.subs ? `<div class="case-big"><span>${esc(c.subs)}</span></div>` : ''}${onCamera(slug)}${quotes.length ? `<h5>In their words</h5>${quotes.map(quoteBlock).join('')}` : ''}${c && c.work ? `<h5>The work</h5><p style="color:var(--ink-2);font-size:15px">${esc(c.work)}</p>` : ''}${win.length ? `${c && c.work ? '' : '<h5>The work</h5>'}<ul>${win.map(w => `<li>${w[2]}</li>`).join('')}</ul>` : ''}${receiptsFor(slug)}${clientLinks(slug)}</div>`);
   };
-  const openVideo = (v, orient, slug) => openModal(`${slug ? clientHead(slug) : ''}<div class="mbody">${videoHtml(v, orient)}</div>`);
+  const openVideo = (v, orient, slug) => openModal(`${slug ? clientHead(slug) : ''}<div class="mbody">${videoHtml(v, orient)}${slug ? clientLinks(slug) : ''}</div>`);
   const openYear = i => {
     const t = D.timeline[i]; if (!t) return;
     openModal(`<div class="mhead"><svg class="yveh" viewBox="0 0 80 44" style="width:84px;height:46px;flex:none" aria-hidden="true">${VEH[i]}</svg><div><div class="eyebrow" style="margin-bottom:6px">${t.year} · ${esc(t.label)}</div><h3>${esc(t.hl || t.title)}</h3></div></div>
