@@ -251,7 +251,7 @@
   if (shorts) shorts.innerHTML = D.samples.shorts.map((s, i) => {
     const c = client(s.client); const brand = c ? `<span class="brand">${avatar(s.client)}${esc(c.short)}</span>` : `<span class="brand">Pinnakle sample</span>`;
     const poster = s.poster || ytThumb(s.yt);
-    return `<div class="short rv" data-video="yt:${s.yt}" data-orient="portrait" data-d="${i % 5}" style="background-image:url('${poster}')">${s.loop ? `<video muted loop playsinline preload="none" src="${s.loop}"></video>` : ''}${brand}${PLAY}<div class="cap">${esc(s.title)}${s.views ? ` · <span style="opacity:.8">${esc(s.views)}</span>` : ''}</div></div>`;
+    return `<div class="short rv" data-video="${s.mp4 ? 'mp4:' + s.mp4 : 'yt:' + s.yt}" ${s.client ? `data-client="${s.client}"` : ''} data-orient="portrait" data-d="${i % 5}" style="background-image:url('${poster}')">${s.loop ? `<video muted loop playsinline preload="none" src="${s.loop}"></video>` : ''}${brand}${PLAY}<div class="cap">${esc(s.title)}${s.views ? ` · <span style="opacity:.8">${esc(s.views)}</span>` : ''}</div></div>`;
   }).join('');
   const longs = $('#longs');
   if (longs) longs.innerHTML = D.samples.longs.map((s, i) => `<div class="long rv" data-video="yt:${s.yt}" data-orient="landscape" data-d="${i % 3}" style="background-image:url('${ytThumb(s.yt)}')">${PLAY}<div class="cap">${esc(s.title)}</div></div>`).join('');
