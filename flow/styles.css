@@ -425,3 +425,17 @@ footer{background:#fff;padding:30px 0 26px;border-top:1px solid var(--line)}
   .totop{left:12px;right:auto}
   .mob-bar{right:84px}
 }
+
+/* CRM for coaches: buying guide */
+.crm-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:16px;align-items:start}
+.crm-tbl-wrap{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.crm-tbl-wrap h3,.crm-grid .cg h3{font-family:var(--font-d);font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0 0 14px;line-height:1.15}
+.crm-tbl{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+.crm-tbl th{font-family:var(--font-l);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+.crm-tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2);line-height:1.45}
+.crm-tbl tr:last-child td{border-bottom:0}.crm-tbl td:first-child{font-weight:700;color:var(--ink)}
+.crm-tbl td.yes{font-weight:700;color:var(--green)}.crm-tbl td.yes::before{content:"✓ ";color:var(--green)}
+.crm-q{margin:0 0 16px;padding-left:20px;font-size:15px;line-height:1.55;color:var(--ink-2);display:grid;gap:8px}
+.crm-grid .cg p{margin:0 0 14px}.crm-grid .cg p a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.crm-grid .cg .btn{margin-top:4px}
+@media(max-width:900px){.crm-grid{grid-template-columns:1fr}}

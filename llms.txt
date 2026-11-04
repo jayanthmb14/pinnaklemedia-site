@@ -5,13 +5,17 @@
 ## What we do
 - Short-form editing: Shorts, Reels, TikTok. Hook-first cuts, captions, covers. Turnaround 24 hours.
 - Long-form YouTube editing with thumbnails, titles and descriptions. Turnaround 48 hours. Details: https://pinnaklemedia.com/youtube-video-editing/
+- Short-form video editing agency: Shorts, Reels and TikToks cut from long videos and podcasts, with clip selection, captions, covers and posting. Details: https://pinnaklemedia.com/short-form-video-editing/
+- YouTube channel management agency: editing, Shorts, thumbnails, titles and descriptions, posting and a Friday report. Details: https://pinnaklemedia.com/youtube-channel-management/
 - Podcast production: full episodes, clips, promos, audiograms.
 - Thumbnails, reel-cover systems, carousels and channel brand kits.
 - LinkedIn ghostwriting: 30+ posts a month, daily comments and DMs. Personal branding for founders: https://pinnaklemedia.com/personal-branding-agency/
+- LinkedIn personal branding agency: positioning, profile, ghostwritten posts in your voice, carousels and video clips. Details: https://pinnaklemedia.com/linkedin-personal-branding/
 - Social media marketing for coaches, consultants, founders and small businesses: video-first content, posting and a weekly report. Details: https://pinnaklemedia.com/social-media-marketing-agency/
 - Channel management: posting to YouTube, Instagram, TikTok, Facebook, LinkedIn, X and Pinterest, with a report every Friday.
 - AI production: trained avatars, cloned voice-over, AI documentaries, generated B-roll.
 - Growth systems: cold email, Meta ad creative, funnels, websites.
+- AI automation agency: lead generation and cold email with Instantly, follow-up and booking with PinnakleFlow, n8n workflows for content, onboarding and reporting. Details: https://pinnaklemedia.com/ai-automation-agency/
 - PinnakleFlow (https://pinnaklemedia.com/flow/): lead follow-up automation. Every DM, comment, call and form fill answered within 60 seconds, booked on the calendar, moved through a pipeline, followed by a review request. Starts at $1 for seven days.
 - Pinnakle OS (https://pinnaklemedia.app/): the management app we built to run the studio. Boards per client, six statuses (raw received, editing, QC, client review, approved, posted), QC checklists, review links, client portal, posting calendar, Friday report. Open to other agencies.
 
@@ -35,7 +39,11 @@ No prices are published. Scope is agreed on a 15-minute call (https://tidycal.co
 - https://pinnaklemedia.com/youtube-video-editing/ — YouTube video editing agency: long-form, Shorts and Reels, thumbnails and posting. Shorts in 24 hours, long-form in 48.
 - https://pinnaklemedia.com/personal-branding-agency/ — personal branding agency for founders, coaches and executives: LinkedIn ghostwriting, YouTube, Shorts, Reels and podcast clips.
 - https://pinnaklemedia.com/social-media-marketing-agency/ — social media marketing agency for coaches, consultants, founders and small businesses: Shorts, Reels, TikTok, LinkedIn and YouTube content, posting and weekly reports.
-- https://pinnaklemedia.com/flow/ — PinnakleFlow
+- https://pinnaklemedia.com/youtube-channel-management/ — YouTube channel management agency for coaches, founders and creators: editing, Shorts, thumbnails, titles, posting and a Friday report.
+- https://pinnaklemedia.com/short-form-video-editing/ — short-form video editing agency: Shorts, Reels and TikToks from long videos and podcasts, Shorts back in 24 hours.
+- https://pinnaklemedia.com/linkedin-personal-branding/ — LinkedIn personal branding and ghostwriting agency for founders, coaches and executives.
+- https://pinnaklemedia.com/ai-automation-agency/ — AI automation agency: cold email, lead generation, follow-up and n8n workflows for coaches, founders and service businesses.
+- https://pinnaklemedia.com/flow/ — PinnakleFlow, a CRM for coaches with follow-up automation, set up and run by Pinnakle Media
 - https://pinnaklemedia.app/ — Pinnakle OS, the app
 
 Contact: pinnaklemedia@gmail.com

@@ -128,6 +128,9 @@ window.PF = (() => {
     ['Is PinnakleFlow a CRM for coaches?', 'Yes. It is built for coaches, consultants and small businesses that get enquiries by DM, form and phone. It keeps every lead in one inbox, replies within a minute, books the call and sends the reminders. Pinnakle Media sets it up around how you sell and runs it with you.'],
     ['What does a CRM for coaches need to do?', 'Catch every enquiry in one place, reply fast, book the call, remind the person to show up, take payment and ask for the review afterwards. PinnakleFlow does all six from one login, and adds a course portal and community for programs.'],
     ['How is PinnakleFlow different from a normal CRM?', 'A normal CRM stores contacts and waits for you to act. PinnakleFlow acts first: it answers the lead, holds the slot, chases the no-show and asks for the review. And it comes with a team. Pinnakle Media builds the pipeline, the messages and the pages, then runs them with you month to month.'],
+    ['What is the best CRM for coaches?', 'The best CRM for coaches keeps leads and clients in one pipeline, follows up automatically and takes bookings. PinnakleFlow does all three and is set up for you by the Pinnakle Media team.'],
+    ['Do I need a CRM as a coach?', 'If you get more than a few leads a week, yes. A CRM stops leads going cold by reminding you and following up for you.'],
+    ['Can PinnakleFlow send follow-ups automatically?', 'Yes. It can send email and SMS follow-ups when someone fills a form, books a call or doesn\'t show up.'],
     ['What happens if I stop?', 'Month to month, no lock-in. Your accounts stay connected to you, we hand over the login and the documentation, and nothing we built is held hostage.'],
   ];
 
