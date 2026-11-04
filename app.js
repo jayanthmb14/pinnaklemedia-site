@@ -105,7 +105,7 @@
       if (k.theme === 'proof') {
         return `<article class="case wide proof rv" data-case="${k.slug}" data-d="${i % 3}">
           <div class="proof-grid"><div class="proof-txt">${meta}${who}${big}<div class="case-title">${esc(k.title)}</div><p class="case-desc">${esc(k.desc)}</p><div class="chips">${chips}</div><span class="case-more">Open case study <span class="arrow">→</span></span></div>
-          <div class="proof-img" data-label="${esc(k.proofLabel || 'YouTube Studio · 28 days')}"><img src="${k.proof}" alt="YouTube Studio analytics for ${esc(c.short)}" loading="lazy"></div></div></article>`;
+          <div class="proof-img" data-label="${esc(k.proofLabel || 'YouTube Studio · 28 days')}"><img src="${k.proof}" alt="${esc(k.proofAlt || `YouTube Studio analytics for ${c.short}`)}" loading="lazy"></div></div></article>`;
       }
       const money = k.theme === 'money' ? `<div class="money-fx" aria-hidden="true">${Array.from({ length: 14 }, (_, j) => `<i style="left:${(j * 7 + 3) % 96}%;animation-delay:${(j * .37) % 2.4}s;font-size:${16 + (j % 3) * 6}px">$</i>`).join('')}</div>` : '';
       return `<article class="case ${k.theme} ${k.size || ''} rv" data-case="${k.slug}" data-d="${i % 3}">

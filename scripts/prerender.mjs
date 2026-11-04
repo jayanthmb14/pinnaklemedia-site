@@ -45,7 +45,7 @@ blocks.brands = (D.brands || []).map(([s, line]) => { const c = client(s); retur
 blocks.bento = D.cases.map(k => {
   const c = client(k.slug) || { short: k.slug, niche: '', platform: '' };
   const chips = k.chips.map(([t, kind]) => `<span class="chip ${kind}">${esc(t)}</span>`).join('');
-  const proof = k.proof ? `<div class="proof-img"><img src="${k.proof}" alt="YouTube Studio analytics for ${esc(c.short)}" loading="lazy"></div>` : '';
+  const proof = k.proof ? `<div class="proof-img"><img src="${k.proof}" alt="${esc(k.proofAlt || `YouTube Studio analytics for ${c.short}`)}" loading="lazy"></div>` : '';
   return `<article class="case ${k.theme || ''} ${k.size || ''}" data-ssr data-case="${k.slug}"><div class="case-meta"><span class="tag">${esc(k.tag)}</span><span class="plat">${esc(c.platform)}</span></div><div class="who">${avatar(k.slug)}<div><b>${esc(c.short)}</b><span>${esc(c.niche)}</span></div></div><div class="bigrow"><div class="case-big"><span class="n">${esc(k.big)}</span><span class="u">${esc(k.unit)}</span></div></div><h4 class="case-title">${esc(k.title)}</h4><p class="case-desc">${esc(k.desc)}</p><div class="chips">${chips}</div>${proof}</article>`;
 }).join('\n');
 
