@@ -276,6 +276,10 @@ window.PM = (() => {
       { yt:'_1uu58fimFU', client:'anshul-kumar', title:'Stop reading PDFs, AI watches them for you', views:'2.1K views', loop:'assets/loops/anshul-kumar-_1uu58fimFU-loop.mp4', poster:'assets/loops/anshul-kumar-_1uu58fimFU-loop.jpg' },
     ],
     longs: [
+      { yt:'hO5icJKNps8', client:'veronica-monet', title:'Veronica Monet · If your “boundary” tells them what to do, it’s control' },
+      { yt:'wXB04FsRSa4', client:'courtney-luna', title:'Courtney Luna · Carnivore mac & cheese, no noodles' },
+      { yt:'0eYsgrnVCGM', client:'veronica-monet', title:'Veronica Monet · Can you consent when you’re drunk?' },
+      { yt:'BBGSMl5FJvU', client:'courtney-luna', title:'Courtney Luna · Carnivore wasn’t enough, so he added this' },
       { yt:'2vQiF8M05aE', client:'levi', title:'Levi Crypto · BlackRock explainer' },
       { yt:'WO3ARHEMU2I', client:'howard-sambol', title:'Life Crafting · The Promise Game explainer' },
       { yt:'sWJGn2R5V1s', client:'retipster', title:'Open Voice Labs · The strange power of trying less' },
@@ -284,11 +288,29 @@ window.PM = (() => {
       { yt:'cdx56oyZx2s', client:null, title:'Amex Points · finance explainer' },
     ],
     thumbs: [
+      ['assets/thumbs/yt-wXB04FsRSa4.jpg','Courtney Luna · approved Oct 2026'],['assets/thumbs/yt-BBGSMl5FJvU.jpg','Courtney Luna'],['assets/thumbs/yt-hO5icJKNps8.jpg','Veronica Monet · Nov 2026'],['assets/thumbs/yt-0eYsgrnVCGM.jpg','Veronica Monet'],
       ['assets/thumbs/net-loss-ebitda.webp','The Financial Controller'],['assets/thumbs/year-end-close.webp','The Financial Controller'],['assets/thumbs/ledger-balance.webp','The Financial Controller'],
       ['assets/thumbs/g2g-love-loss.webp','Grief 2 Growth'],['assets/thumbs/g2g-beyond-death.webp','Grief 2 Growth'],['assets/thumbs/escape-the-lies.webp','Coaching'],
       ['assets/thumbs/ultimate-ride.webp','Moto podcast'],['assets/thumbs/yoga-will-not.webp','Fitness'],['assets/thumbs/jealousy.webp','Relationships'],
     ],
     covers: ['01','02','06','07','12','15','16','20','21','24','10','17'].map(n => `assets/covers/cover_${n}.jpg`),
+    /* "What the edits look like" by edit style: each style explains the layout and how the cut is made, then shows the best recent examples (indexes into shorts) */
+    styles: [
+      { key:'story', n:'01', name:'Animated story reels', tag:'AI 3D · narrated', trend:'The animated founder-story format blowing up on Instagram in 2026', how:['Script each episode from the book and voice notes, in his own words','Lock one cast: the founder at 10, 15, 21 and today, matched to real photos','Shot-by-shot generation, then cut to captions, sound design and a music bed'], best:'Founders and authors with a life story', pick:['timo-branson','timo-laughed-out','timo-meant-for-more','timo-chief-failure-officer'] },
+      { key:'cards', n:'02', name:'Talking head + bold text cards', tag:'Split screen · brand colours', trend:'Split-screen title cards that read with the sound off', how:['One take to camera, trimmed to a single idea','Top half: the speaker. Bottom half: a bold card with the hook in brand colours','Kinetic captions and a punch-in on the line that matters'], best:'Coaches, therapists and podcast hosts', pick:['wellismo-divas','wellismo-inner-critic'] },
+      { key:'explainer', n:'03', name:'Webinar → explainer', tag:'Editorial · data on screen', trend:'Clean “newsletter” look: white page, highlighted keywords, receipts on screen', how:['Clip a 60-minute webinar down to one question and one answer','Frame the speaker in a card, add the quote, the chart or the press clipping','Highlighted keyword captions on a white editorial page'], best:'Experts, engineers and B2B founders', pick:['yoshi-careers-not-linear','yoshi-trailer'] },
+      { key:'cinematic', n:'04', name:'Cinematic brand reels', tag:'B-roll · slow push-ins', trend:'Quiet luxury: slow camera, serif text, no talking', how:['Site or product footage graded warm and even','Slow push-ins and match cuts between materials and rooms','Minimal serif titles and a music bed, no voice needed'], best:'Interiors, real estate, products and clinics', pick:['iii-studio-interiors','iqigai-home-tour'] },
+      { key:'viral', n:'05', name:'Viral podcast clips', tag:'Curiosity hooks · word-by-word captions', trend:'Hook in the first second, captions you can’t look away from', how:['Find the curiosity moment in a full episode','Open on the question, cut everything before it','Word-by-word captions, B-roll and a sound hit on the turn'], best:'Podcasts and faith or lifestyle channels', pick:['S2bdlQ0uIwA','l5nlgz3hPMk','AnBoYGj5qJY','FseOKJMy4M0'] },
+      { key:'motion', n:'06', name:'Motion-graphic explainers', tag:'Kinetic type · animated UI', trend:'Fast, designed explainers under 40 seconds', how:['Script the one thing the product does','Animate the interface, the type and the sound together','Seven layouts we reuse: minimal, comic, breaking news, POV and more'], best:'Apps, SaaS and AI tools', pick:['pinnakle-seven-styles','_1uu58fimFU'] },
+    ],
+    carousels: [
+      { brand:'WaterHeater.app', title:'40-gallon vs 50-gallon', note:'A buying question turned into five slides that end on the booking link.', slides:[1,2,3,4,5].map(n => `assets/carousels/waterheater-gallon-${n}.jpg`) },
+      { brand:'Beet.Health', title:'Put a finger down if… (nutritionist edition)', note:'A trend format rewritten for the audience, so it gets shared, not just liked.', slides:[1,2,3,4,5,6].map(n => `assets/carousels/beet-finger-down-${n}.jpg`) },
+      { brand:'III Studio', title:'The unfinished edge is where it all gets decided', note:'Site photos with line-art overlays: a design story told in five slides.', slides:[1,2,3,4,5].map(n => `assets/carousels/iii-unfinished-edge-${n}.jpg`) },
+      { brand:'WaterHeater.app', title:'What happens after you ask for a free estimate', note:'The whole sales process, step by step, so the first call is easy.', slides:[1,2,3,4,5,6].map(n => `assets/carousels/waterheater-estimate-${n}.jpg`) },
+      { brand:'Beet.Health', title:'Rating our own features out of 10 (brutally honest)', note:'Product slides written as a confession, which is why people read to the end.', slides:[1,2,3,4,5,6].map(n => `assets/carousels/beet-rating-${n}.jpg`) },
+      { brand:'III Studio', title:'Before the first cut, there is a long conversation', note:'Process carousel for an interiors studio: warm photos, one line per slide.', slides:[1,2,3,4,5].map(n => `assets/carousels/iii-first-cut-${n}.jpg`) },
+    ],
   };
 
   const beyond = [

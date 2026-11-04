@@ -248,11 +248,24 @@
 
   /* ---------------- render: work ---------------- */
   const shorts = $('#shorts');
-  if (shorts) shorts.innerHTML = D.samples.shorts.map((s, i) => {
+  const shortCard = (s, i) => {
     const c = client(s.client); const brand = c ? `<span class="brand">${avatar(s.client)}${esc(c.short)}</span>` : `<span class="brand">Pinnakle sample</span>`;
     const poster = s.poster || ytThumb(s.yt);
     return `<div class="short rv" data-video="${s.mp4 ? 'mp4:' + s.mp4 : 'yt:' + s.yt}" ${s.client ? `data-client="${s.client}"` : ''} data-orient="portrait" data-d="${i % 5}" style="background-image:url('${poster}')">${s.loop ? `<video muted loop playsinline preload="none" src="${s.loop}"></video>` : ''}${brand}${PLAY}<div class="cap">${esc(s.title)}${s.views ? ` · <span style="opacity:.8">${esc(s.views)}</span>` : ''}</div></div>`;
-  }).join('');
+  };
+  if (shorts && D.samples.styles) {
+    /* By edit style: a chip bar to jump between styles, then one block per style (how it's made + the best examples) */
+    const byKey = Object.fromEntries(D.samples.shorts.map(s => [s.mp4 ? s.mp4.split('/').pop().replace('.mp4', '') : s.yt, s]));
+    shorts.className = 'estyles';
+    shorts.innerHTML = `<div class="estyle-nav">${D.samples.styles.map(st => `<a href="#style-${st.key}" data-style="${st.key}"><b>${st.n}</b>${esc(st.name)}</a>`).join('')}</div>` +
+      D.samples.styles.map(st => `<div class="estyle rv" id="style-${st.key}">
+        <div class="estyle-info"><div class="estyle-n">${st.n}</div><span class="tag">${esc(st.tag)}</span><h3>${esc(st.name)}</h3><p class="estyle-trend">${esc(st.trend)}</p>
+          <ol class="estyle-how">${st.how.map(h => `<li>${esc(h)}</li>`).join('')}</ol><p class="estyle-best"><span>Best for</span>${esc(st.best)}</p></div>
+        <div class="estyle-reels">${st.pick.map((k, i) => byKey[k] ? shortCard(byKey[k], i) : '').join('')}</div></div>`).join('');
+    shorts.addEventListener('click', e => { const a = e.target.closest('.estyle-nav a'); if (!a) return; e.preventDefault(); const t = document.getElementById('style-' + a.dataset.style); if (t) window.scrollTo({ top: t.getBoundingClientRect().top + scrollY - 110, behavior: 'smooth' }); });
+  } else if (shorts) shorts.innerHTML = D.samples.shorts.map(shortCard).join('');
+  const carousels = $('#carousels');
+  if (carousels && D.samples.carousels) carousels.innerHTML = D.samples.carousels.map((k, i) => `<div class="carousel rv" data-d="${i % 3}"><div class="car-strip" tabindex="0" aria-label="${esc(k.brand)} carousel: ${esc(k.title)}">${k.slides.map((src, j) => `<img src="${src}" alt="${esc(k.brand)} carousel, slide ${j + 1} of ${k.slides.length}" loading="lazy">`).join('')}</div><div class="car-meta"><span class="tag">${esc(k.brand)} · ${k.slides.length} slides</span><b>${esc(k.title)}</b><span>${esc(k.note)}</span><span class="car-hint">Swipe →</span></div></div>`).join('');
   const longs = $('#longs');
   if (longs) longs.innerHTML = D.samples.longs.map((s, i) => `<div class="long rv" data-video="yt:${s.yt}" data-orient="landscape" data-d="${i % 3}" style="background-image:url('${ytThumb(s.yt)}')">${PLAY}<div class="cap">${esc(s.title)}</div></div>`).join('');
   const thumbs = $('#thumbs');

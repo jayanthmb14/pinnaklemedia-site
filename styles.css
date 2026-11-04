@@ -1230,3 +1230,36 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
 
 /* Tall chat-screenshot proof (Timo Armoo): show the whole screenshot instead of a 16:10 crop */
 .case[data-case="timo-armoo"] .proof-img img{aspect-ratio:auto;width:auto;max-width:100%;max-height:520px;object-fit:contain}
+
+/* ---------- Work: by edit style ---------- */
+.estyles{display:flex;flex-direction:column;gap:18px}
+.estyle-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none;position:sticky;top:64px;z-index:5;background:linear-gradient(var(--bg-2,#f3f1ec) 70%,transparent)}
+.estyle-nav::-webkit-scrollbar{display:none}
+.estyle-nav a{flex:none;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid var(--line,rgba(0,0,0,.1));background:#fff;font-size:13px;font-weight:600;color:var(--ink,#111);text-decoration:none;transition:background .3s,color .3s}
+.estyle-nav a b{font-family:var(--font-l);font-size:10.5px;color:var(--orange)}
+.estyle-nav a:hover{background:var(--ink,#111);color:#fff}
+.estyle{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:18px;padding:18px;border-radius:22px;background:#fff;border:1px solid var(--line,rgba(0,0,0,.08));scroll-margin-top:120px}
+.estyle-info{display:flex;flex-direction:column;gap:10px;padding:6px 4px}
+.estyle-n{font-family:var(--font-l);font-size:42px;font-weight:700;line-height:1;color:var(--orange)}
+.estyle-info h3{font-size:24px;line-height:1.15;letter-spacing:-.02em;margin:0}
+.estyle-trend{font-size:13.5px;color:var(--ink-2,#555);margin:0}
+.estyle-how{margin:2px 0 0;padding:0;list-style:none;counter-reset:h;display:flex;flex-direction:column;gap:8px}
+.estyle-how li{counter-increment:h;display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:13.5px;line-height:1.4;color:var(--ink,#111)}
+.estyle-how li::before{content:counter(h);width:22px;height:22px;border-radius:50%;background:var(--ink,#111);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.estyle-best{margin:auto 0 0;font-size:13px;color:var(--ink-2,#555)}
+.estyle-best span{display:block;font-family:var(--font-l);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3,#888);margin-bottom:2px}
+.estyle-reels{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.estyle-reels .short{scroll-snap-align:start;max-height:440px}
+@media(max-width:860px){.estyle{grid-template-columns:1fr;padding:14px}.estyle-reels{grid-auto-columns:46%}.estyle-n{font-size:34px}}
+/* ---------- Work: carousels ---------- */
+.carousels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.carousel{border-radius:20px;background:#fff;border:1px solid var(--line,rgba(0,0,0,.08));overflow:hidden;display:flex;flex-direction:column}
+.car-strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/5;background:#f2f0eb}
+.car-strip::-webkit-scrollbar{display:none}
+.car-strip img{flex:none;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.car-meta{display:flex;flex-direction:column;gap:4px;padding:14px 16px 16px;font-size:13px;color:var(--ink-2,#555)}
+.car-meta b{font-size:15.5px;color:var(--ink,#111);line-height:1.3}
+.car-hint{font-family:var(--font-l);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3,#888);margin-top:4px}
+@media(max-width:1000px){.carousels{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.carousels{grid-template-columns:1fr}}
+.estyle-info .tag,.car-meta .tag{align-self:flex-start}
