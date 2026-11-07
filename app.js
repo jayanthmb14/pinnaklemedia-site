@@ -33,6 +33,9 @@
   };
   const ytThumb = id => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
   const PLAY = '<div class="play"><svg viewBox="0 0 24 24" fill="#0f0f0f"><path d="M8 5v14l11-7z"/></svg></div>';
+  /* our mark over every player we can't burn it into (YouTube), and no download/PiP on our own files */
+  const WM = '<img class="wm" src="assets/brand/logo-light.svg" alt="" aria-hidden="true">';
+  const NODL = 'controlslist="nodownload noplaybackrate" disablepictureinpicture oncontextmenu="return false"';
   const srcKey = s => { s = (s || '').toLowerCase(); if (s.includes('slack')) return 'slack'; if (s.includes('mail')) return 'email'; if (s.includes('whatsapp') || s.includes('telegram')) return 'whatsapp'; if (s.includes('call') || s.includes('review') || s.includes('tidycal') || s.includes('notes')) return 'call'; if (s.includes('deck')) return 'deck'; return 'other'; };
 
   /* ---------------- per-case charts (each case gets its own shape) ---------------- */
@@ -249,10 +252,19 @@
   /* ---------------- render: work ---------------- */
   const shorts = $('#shorts');
   const shortCard = (s, i) => {
-    const c = client(s.client); const brand = c ? `<span class="brand">${avatar(s.client)}${esc(c.short)}</span>` : `<span class="brand">Pinnakle sample</span>`;
+    const c = client(s.client); const brand = c ? `<span class="brand">${avatar(s.client)}${esc(c.short)}</span>` : `<span class="brand">${s.sample ? 'Sample edit' : 'Pinnakle Media'}</span>`;
     const poster = s.poster || ytThumb(s.yt);
     return `<div class="short rv" data-video="${s.mp4 ? 'mp4:' + s.mp4 : 'yt:' + s.yt}" ${s.client ? `data-client="${s.client}"` : ''} data-orient="portrait" data-d="${i % 5}" style="background-image:url('${poster}')">${s.loop ? `<video muted loop playsinline preload="none" src="${s.loop}"></video>` : ''}${brand}${PLAY}<div class="cap">${esc(s.title)}${s.views ? ` · <span style="opacity:.8">${esc(s.views)}</span>` : ''}</div></div>`;
   };
+  /* the reel wall: two rows of every self-hosted reel drifting in opposite directions; hover pauses a row, tap opens the reel */
+  const wall = $('#reelwall');
+  if (wall) {
+    const pool = D.samples.shorts.filter(s => s.mp4);
+    const tile = s => `<button class="rw-tile" data-video="mp4:${s.mp4}" data-orient="portrait" ${s.client ? `data-client="${s.client}"` : ''} style="background-image:url('${s.poster}')" aria-label="${esc(s.title)}"></button>`;
+    const row = (list, rev) => `<div class="rw-row${rev ? ' rev' : ''}"><div class="rw-track">${list.map(tile).join('')}${list.map(tile).join('')}</div></div>`;
+    const half = Math.ceil(pool.length / 2);
+    wall.innerHTML = row(pool.slice(0, half)) + row(pool.slice(half), true) + `<div class="rw-badge"><b>${D.samples.shorts.length + D.samples.longs.length}</b> edits on this page · every one cut by our team</div>`;
+  }
   if (shorts && D.samples.styles) {
     /* By edit style: a chip bar to jump between styles, then one block per style (how it's made + the best examples) */
     const byKey = Object.fromEntries(D.samples.shorts.map(s => [s.mp4 ? s.mp4.split('/').pop().replace('.mp4', '') : s.yt, s]));
@@ -267,7 +279,7 @@
   const carousels = $('#carousels');
   if (carousels && D.samples.carousels) carousels.innerHTML = D.samples.carousels.map((k, i) => `<div class="carousel rv" data-d="${i % 3}"><div class="car-strip" tabindex="0" aria-label="${esc(k.brand)} carousel: ${esc(k.title)}">${k.slides.map((src, j) => `<img src="${src}" alt="${esc(k.brand)} carousel, slide ${j + 1} of ${k.slides.length}" loading="lazy">`).join('')}</div><div class="car-meta"><span class="tag">${esc(k.brand)} · ${k.slides.length} slides</span><b>${esc(k.title)}</b><span>${esc(k.note)}</span><span class="car-hint">Swipe →</span></div></div>`).join('');
   const longs = $('#longs');
-  if (longs) longs.innerHTML = D.samples.longs.map((s, i) => `<div class="long rv" data-video="yt:${s.yt}" data-orient="landscape" data-d="${i % 3}" style="background-image:url('${ytThumb(s.yt)}')">${PLAY}<div class="cap">${esc(s.title)}</div></div>`).join('');
+  if (longs) longs.innerHTML = D.samples.longs.map((s, i) => `<div class="long rv" data-video="yt:${s.yt}" data-orient="landscape" data-d="${i % 3}" style="background-image:url('${ytThumb(s.yt)}')">${WM}${PLAY}<div class="cap">${esc(s.title)}</div></div>`).join('');
   const thumbs = $('#thumbs');
   if (thumbs) thumbs.innerHTML = D.samples.thumbs.map(([src, cap], i) => `<figure class="rv" data-d="${i % 3}"><img src="${src}" alt="${esc(cap)} thumbnail" loading="lazy"><figcaption>${esc(cap)}</figcaption></figure>`).join('');
   const covers = $('#covers');
@@ -304,14 +316,14 @@
   modal.addEventListener('click', e => { if (e.target.classList.contains('bg') || e.target.classList.contains('close')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
   const videoHtml = (v, orient) => {
-    if (v.startsWith('yt:')) { const id = v.slice(3); return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Video"></iframe></div>`; }
-    return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><video src="${v.slice(4)}" controls autoplay playsinline></video></div>`;
+    if (v.startsWith('yt:')) { const id = v.slice(3); return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Video"></iframe>${WM}</div>`; }
+    return `<div class="mvideo ${orient === 'portrait' ? 'portrait' : ''}"><video src="${v.slice(4)}" controls autoplay playsinline ${NODL}></video></div>`;
   };
   /* a client's own video testimonial(s), playable inside their story */
   const onCamera = slug => { const vs = (D.videoTestimonials || []).filter(v => v.client === slug); if (!vs.length) return '';
     return `<h5>On camera</h5>${vs.map(v => v.yt
-      ? `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(v.title)}"></iframe></div>`
-      : `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><video src="${v.mp4}" poster="${v.poster || ''}" controls playsinline preload="none" aria-label="${esc(v.title)}"></video></div>`).join('')}<p class="small muted" style="margin-top:6px">${esc(vs[0].title)} · ${esc(vs[0].meta || '')}</p>`; };
+      ? `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="${esc(v.title)}"></iframe>${WM}</div>`
+      : `<div class="mvideo ${v.orient === 'portrait' ? 'portrait' : ''}"><video src="${v.mp4}" poster="${v.poster || ''}" controls playsinline preload="none" ${NODL} aria-label="${esc(v.title)}"></video></div>`).join('')}<p class="small muted" style="margin-top:6px">${esc(vs[0].title)} · ${esc(vs[0].meta || '')}</p>`; };
   const clientHead = (slug, extra = '') => { const c = client(slug); if (!c) return `<div class="mhead"><span class="ini">PM</span><div><h3>Pinnakle Media client</h3><div class="meta">${extra}</div></div></div>`; return `<div class="mhead">${avatar(slug)}<div><h3>${esc(c.name)}</h3><div class="meta">${esc(c.niche)} · ${esc(c.platform)}${c.since ? ` · client ${esc(c.since)}${c.until ? ' → ' + esc(c.until) : ''}` : ''}${extra}</div></div></div>`; };
   const clientLinks = slug => { const c = client(slug); if (!c || !(c.channel || c.site)) return ''; return `<div class="mlinks">${c.channel ? `<a class="btn btn-ghost" href="${c.channel}" target="_blank" rel="noopener">Visit ${esc(c.short)} ↗</a>` : ''}${c.site ? `<a class="btn btn-ghost" href="${c.site}" target="_blank" rel="noopener">${esc(c.site.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))} ↗</a>` : ''}</div>`; };
   const quoteBlock = q => `<div class="mq" data-src="${srcKey(q.src)}">“${esc(q.q)}”<small>${esc(q.who)} · ${esc(q.src)}, ${esc(q.date)}</small></div>`;

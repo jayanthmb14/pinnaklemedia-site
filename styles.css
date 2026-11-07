@@ -1263,3 +1263,18 @@ body.themed .playbook{background:linear-gradient(180deg,color-mix(in srgb,var(--
 @media(max-width:1000px){.carousels{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.carousels{grid-template-columns:1fr}}
 .estyle-info .tag,.car-meta .tag{align-self:flex-start}
+/* Pinnakle mark over YouTube players and long-form thumbnails (our own mp4s have it burned in) */
+.wm{position:absolute;top:3%;right:3%;width:clamp(70px,16%,150px);box-sizing:border-box;padding:.45em .9em;background:rgba(8,12,10,.58);border-radius:999px;opacity:.9;pointer-events:none;z-index:3}
+.mvideo.portrait .wm{width:24%}
+/* reel wall: a slow, two-row drift of recent reels above the work tabs */
+.reelwall{position:relative;display:flex;flex-direction:column;gap:10px;margin:6px 0 22px;padding:4px 0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.rw-row{overflow:hidden}
+.rw-track{display:flex;gap:10px;width:max-content;animation:marquee 90s linear infinite}
+.rw-row.rev .rw-track{animation-direction:reverse;animation-duration:110s}
+.rw-row:hover .rw-track{animation-play-state:paused}
+.rw-tile{flex:none;width:92px;aspect-ratio:9/16;border:0;padding:0;border-radius:12px;background:#111 center/cover no-repeat;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s var(--ease),filter .4s;filter:saturate(.9)}
+.rw-tile:hover{transform:translateY(-4px) scale(1.06);box-shadow:var(--sh-lg);filter:none}
+.rw-badge{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:7px 14px;border-radius:999px;background:rgba(15,15,15,.82);color:#fff;font-size:12px;font-weight:600;white-space:nowrap;backdrop-filter:blur(6px);pointer-events:none}
+.rw-badge b{color:var(--yellow);font-family:var(--font-l)}
+@media(max-width:640px){.rw-tile{width:72px}.rw-badge{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.rw-track{animation:none}.rw-row{overflow-x:auto}}
