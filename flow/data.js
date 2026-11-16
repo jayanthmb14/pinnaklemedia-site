@@ -68,7 +68,7 @@ window.PF = (() => {
 
   /* Numbers board: demo-account figures, labelled illustrative in the legal line. */
   const numbers = [
-    { k: 18420, suf: '+', t: 'conversations answered', s: 'across client accounts, last 90 days', bars: [3, 5, 4, 6, 7, 6, 8, 9] },
+    { k: 18420, suf: '+', t: 'conversations answered', s: 'demo account, last 90 days', bars: [3, 5, 4, 6, 7, 6, 8, 9] },
     { k: 2960, suf: '', t: 'calls booked', s: 'by text, DM and web form, no human dialling', bars: [2, 3, 3, 5, 6, 6, 8, 9] },
     { k: 1184, suf: '', t: 'reviews requested', s: '4.8 average on the ones that came back', bars: [4, 4, 5, 5, 6, 8, 8, 9] },
     { k: 60, suf: ' s', t: 'median first reply', s: 'missed call to text, every hour of the day', bars: [9, 8, 7, 6, 5, 4, 4, 3] },
